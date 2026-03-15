@@ -1,0 +1,230 @@
+/* ===== Welcome disclaimer ===== */
+"welcome.title" = "Welcome to Verifium";
+"welcome.subtitle" = "BEFORE WE START";
+"welcome.not_antivirus" = "This app is not an antivirus. Third-party antivirus software has no real effect on iOS due to Apple's sandboxing model.";
+"welcome.what_it_does" = "Verifium walks you through security and privacy best practices recommended by ANSSI, CISA, and Apple.";
+"welcome.manual_review" = "Most checks require your manual review. Complete the checklist to get an accurate security score for your device.";
+"welcome.disclaimer" = "Even with a good score, your device can still be vulnerable to zero-days, social engineering, and other attacks. That said, following the guide will make you safer overall.";
+"welcome.cta" = "Let's verify together!";
+
+/* ===== Tabs ===== */
+"tab.dashboard" = "Dashboard";
+"tab.checks" = "Checks";
+
+/* ===== Categories ===== */
+"category.device" = "Device";
+"category.network" = "Network";
+"category.applications" = "Applications";
+"category.privacy" = "Privacy";
+"category.data_protection" = "Data Protection";
+
+/* ===== Severity ===== */
+"severity.low" = "Low";
+"severity.medium" = "Medium";
+"severity.high" = "High";
+"severity.critical" = "Critical";
+
+/* ===== Status ===== */
+"status.passed" = "Passed";
+"status.failed" = "Failed";
+"status.warning" = "Warning";
+"status.checking" = "Checking…";
+"status.manual_required" = "Action Required";
+"status.manual_passed" = "Verified ✓";
+"status.manual_failed" = "Failed ✗";
+
+/* ===== Dashboard ===== */
+"dashboard.title" = "SECURITY AUDIT";
+"dashboard.subtitle" = "Device Health";
+"dashboard.last_scan" = "Last scan";
+"dashboard.score_label" = "SECURITY SCORE";
+"dashboard.scanning" = "Scanning…";
+"dashboard.run_scan" = "AUDIT AGAIN";
+"dashboard.critical_issues" = "CRITICAL ISSUES";
+"dashboard.categories" = "CATEGORIES";
+"dashboard.reset_manual" = "Reset manual verifications";
+
+"score.excellent" = "Excellent security";
+"score.good" = "Good";
+"score.moderate" = "Moderate risk";
+"score.critical" = "Critical : actions required";
+"score.incomplete" = "Complete the checklist to see your score";
+
+"stats.passing" = "Passing";
+"stats.failing" = "Failing";
+"stats.pending" = "Pending";
+
+/* ===== Checks list ===== */
+"checks.search" = "Search checks…";
+"checks.no_results" = "No checks match your filter.";
+
+"filter.all" = "All";
+"filter.failing" = "Failing";
+"filter.pending" = "Pending";
+"filter.passing" = "Passing";
+
+/* ===== Detail view ===== */
+"detail.why" = "WHY IT MATTERS";
+"detail.how_to" = "HOW TO VERIFY";
+"detail.detected" = "DETECTED VALUE";
+"detail.sources" = "REFERENCES";
+"detail.manual_prompt" = "HAVE YOU VERIFIED THIS?";
+"detail.mark_pass" = "Compliant";
+"detail.mark_fail" = "Not Compliant";
+"detail.reset" = "Reset verification";
+"detail.open_settings" = "Open Settings";
+"detail.settings_disclaimer" = "iOS does not allow apps to open specific settings. Please navigate to the correct section manually using the steps above.";
+
+/* ===== Runtime strings ===== */
+"ad_tracking.enabled" = "Ad tracking ON";
+"ad_tracking.disabled" = "Ad tracking OFF";
+"ad_tracking.restricted" = "Restricted by policy";
+"ad_tracking.not_set" = "Not determined";
+"location.enabled" = "Location Services ON";
+"location.disabled" = "Location Services OFF";
+"vpn.not_detected" = "No VPN detected";
+"app.installed" = "%@ is installed";
+"app.not_installed" = "%@ not found";
+"reboot.days_ago" = "%d days since last reboot";
+"wifi.enabled" = "Wi-Fi ON";
+"wifi.disabled" = "Wi-Fi OFF";
+"lockdown.enabled" = "Lockdown Mode ON";
+"lockdown.disabled" = "Lockdown Mode OFF";
+
+/* ============================= */
+/* ===== CHECK CONTENT ========= */
+/* ============================= */
+
+/* --- Passcode --- */
+"check.passcode.title" = "Strong Passcode";
+"check.passcode.short" = "Use an alphanumeric passcode (8+ chars)";
+"check.passcode.explanation" = "A 6-digit PIN can be brute-forced in minutes with dedicated hardware. An alphanumeric passcode of 8 or more characters is much harder to crack and resists most physical unlock attacks, including forensic tools like Cellebrite. ANSSI and CISA both recommend disabling Simple Passcode in favour of a complex alphanumeric code.";
+"check.passcode.guidance" = "Open Settings → Face ID & Passcode (or Touch ID & Passcode)\nTap Change Passcode\nTap Passcode Options and select Custom Alphanumeric Code\nChoose a passphrase of 8+ characters mixing letters, numbers and symbols\nAvoid dictionary words or predictable patterns";
+
+/* --- OS Version --- */
+"check.os_version.title" = "OS Update";
+"check.os_version.short" = "Ensure the latest iOS version is installed";
+"check.os_version.explanation" = "Apple releases security patches with every iOS update. Running an outdated OS leaves known vulnerabilities unpatched, and many targeted attacks exploit those exact flaws. CISA and ANSSI both require keeping mobile operating systems current as a baseline security measure. Zero-click exploits are frequently patched within days of discovery, so delaying updates leaves your device at risk.";
+"check.os_version.guidance" = "If this check fails, go to Settings → General → Software Update\nInstall any available update immediately\nEnable Automatic Updates to stay current";
+
+/* --- Lockdown Mode --- */
+"check.lockdown_mode.title" = "Lockdown Mode";
+"check.lockdown_mode.short" = "Must be enabled for high-risk profiles";
+"check.lockdown_mode.explanation" = "Lockdown Mode (introduced in iOS 16) heavily restricts attack surfaces by disabling message previews, link previews, wired connections to unknown devices, complex web features, and more. It was built to counter zero-click and zero-day exploits used by spyware vendors like NSO Group (Pegasus) and Paragon (Graphite). ANSSI's 2025 threat intelligence report cites Lockdown Mode as one of the strongest protections on iOS.";
+"check.lockdown_mode.guidance" = "Open Settings → Privacy & Security\nScroll down to Lockdown Mode\nTap Turn On Lockdown Mode\nConfirm and restart the device\nNote: some apps and features will be restricted, this is intentional";
+
+/* --- Reboot Time --- */
+"check.reboot_time.title" = "Regular Reboot";
+"check.reboot_time.short" = "Reboot your device at least every two weeks";
+"check.reboot_time.explanation" = "Rebooting your iPhone clears volatile memory and kills all running processes, including any in-memory-only backdoors. Many advanced spyware payloads (like Pegasus zero-click implants) don't survive a reboot because they rely on non-persistent injection. Amnesty International and Citizen Lab both recommend periodic reboots. Every 14 days is a reasonable minimum; more often if you're a high-risk target.";
+"check.reboot_time.guidance" = "This check is automatic — the app detects how long ago your device was last restarted\nIf more than 14 days: hold the side button and volume down, then slide to power off\nWait a few seconds, then turn the device back on\nConsider setting a recurring reminder to reboot every one to two weeks";
+
+/* --- Ad Tracking --- */
+"check.ad_tracking.title" = "Disabling Personalized Ads";
+"check.ad_tracking.short" = "Advertising ID (AdID) should be disabled";
+"check.ad_tracking.explanation" = "Apple's Advertising ID (IDFA) lets apps and ad networks build a cross-app profile of your behaviour. Even when data looks anonymised, IDFA-linked datasets have been de-anonymised to identify specific people. Disabling it stops advertisers and data brokers from tracking you across applications.";
+"check.ad_tracking.guidance" = "Open Settings → Privacy & Security → Tracking\nDisable Allow Apps to Request to Track\nThen go to Settings → Privacy & Security → Apple Advertising\nDisable Personalised Ads";
+
+/* --- Location Services --- */
+"check.location_services.title" = "Location Services";
+"check.location_services.short" = "Global location access should be disabled";
+"check.location_services.explanation" = "When Location Services are on, any app with permission can query your physical position. Several spyware families use legitimate location APIs to silently exfiltrate GPS coordinates. Even without spyware, advertising SDKs in popular apps routinely harvest location data. Turning Location Services off globally removes this risk. You can re-enable specific apps (maps, emergency services) individually when needed.";
+"check.location_services.guidance" = "Open Settings → Privacy & Security → Location Services\nToggle Location Services OFF\nIf you need navigation: re-enable only for Maps, set to 'While Using'\nReview each app's location permission and revoke unnecessary access";
+
+/* --- Bluetooth --- */
+"check.bluetooth.title" = "Bluetooth";
+"check.bluetooth.short" = "Disable Bluetooth when not in use";
+"check.bluetooth.explanation" = "Bluetooth emits a persistent, uniquely identifiable signal that can be used for passive tracking by nearby sensors (retail analytics, covert surveillance). Several vulnerability classes (BlueBorne, KNOB, BIAS) have allowed remote code execution over Bluetooth without pairing. CISA recommends disabling Bluetooth when not in use.";
+"check.bluetooth.guidance" = "Open Settings → Bluetooth\nToggle Bluetooth OFF\nAlternatively use Control Center — but note the icon toggle only disconnects; Settings is the true off switch\nEnable only when using trusted peripherals (headphones, keyboard). When travelling in sensitive environments, keep Bluetooth off entirely";
+
+/* --- WiFi --- */
+"check.wifi.title" = "WiFi";
+"check.wifi.short" = "Disable WiFi when not in use";
+"check.wifi.explanation" = "When WiFi is on, your device broadcasts probe requests listing previously connected networks. Nearby listeners can use these to track you or lure your device into connecting to a rogue access point (Evil Twin attack). Turning WiFi off stops this broadcast and prevents accidental connections to malicious networks.";
+"check.wifi.guidance" = "Open Settings → Wi-Fi\nToggle Wi-Fi OFF\nNote: in Control Center, the toggle only pauses connection for the session — use Settings for a true off state\nWhen travelling in sensitive environments, keep WiFi off entirely";
+
+/* --- VPN --- */
+"check.vpn.title" = "VPN";
+"check.vpn.short" = "Route traffic through a trusted VPN";
+"check.vpn.explanation" = "A VPN encrypts all traffic leaving your device and routes it through a trusted exit point, which stops your ISP or local network operators from seeing your traffic. A home VPN (routing through your own internet connection) is the safest option since you control the exit.\n\n⚠ Free or commercial VPN providers add limited value and may log or sell your traffic. VPNs are especially important when travelling in countries with network-level surveillance (e.g. Russia, China, Iran).";
+"check.vpn.guidance" = "The app detected no active VPN tunnel on this device\nFor a home VPN: set up WireGuard on a router or Raspberry Pi at home, then connect from abroad\nAlternatively use a reputable VPN with a strict no-log policy audited by an independent third party\nGo to Settings → General → VPN & Device Management to configure";
+
+/* --- WhatsApp --- */
+"check.whatsapp.title" = "WhatsApp";
+"check.whatsapp.short" = "WhatsApp is a known zero-click attack vector";
+"check.whatsapp.explanation" = "Between 2024 and 2026, WhatsApp was used as a zero-click attack vector on multiple documented occasions. Vulnerabilities in its SRTCP media stack and DNG image processing allowed remote code execution with no user interaction. If WhatsApp is not installed, this check passes automatically. If it is installed, follow the steps below to reduce your exposure.";
+"check.whatsapp.guidance" = "Block messages from unknown numbers: WhatsApp → Settings → Privacy → Advanced → turn on Block unknown account messages\nCheck for unauthorized linked devices: WhatsApp → Settings → Linked Devices → remove any you don't recognise\nEnable two-step verification: WhatsApp → Settings → Account → Two-step verification\nKeep WhatsApp up to date to receive security patches\nFor maximum safety, consider switching to Signal or using WhatsApp on a dedicated secondary device";
+
+/* --- Telegram --- */
+"check.telegram.title" = "Telegram";
+"check.telegram.short" = "Telegram has documented risks and concerns";
+"check.telegram.explanation" = "Telegram's default chats are not end-to-end encrypted: messages are stored in plaintext on Telegram's servers. An OCCRP investigation documented a man-in-the-middle operation involving Telegram metadata and cooperation with Russian security services (FSB). Only 'Secret Chats' use E2E encryption, and they're not enabled by default. For sensitive communications, Signal is a safer alternative. If Telegram is not installed, this check passes automatically.";
+"check.telegram.guidance" = "Delete Telegram from your device\nFor group communication, consider Signal (supports groups with E2E encryption)\nIf Telegram is required: use Secret Chats only, enable a passcode lock, and never use Telegram on a device with sensitive data";
+
+/* --- iCloud Backup --- */
+"check.icloud_backup.title" = "iCloud Backup Off";
+"check.icloud_backup.short" = "iCloud backups may expose data without Advanced Data Protection";
+"check.icloud_backup.explanation" = "Without Advanced Data Protection, iCloud backups are encrypted but Apple holds the keys. That means they can be turned over to law enforcement or exposed if Apple's servers are breached. Standard iCloud backups include messages, photos, Health data, and app data. For high-risk profiles, turning off iCloud backup removes this exposure. If you need backups, use an encrypted local backup via Finder/iTunes instead.";
+"check.icloud_backup.guidance" = "Open Settings → [Your Name] → iCloud → iCloud Backup\nToggle iCloud Backup OFF\nFor local encrypted backups: connect to a Mac, open Finder, select your device, check Encrypt local backup and set a strong password\nStore the backup password in a password manager";
+
+/* --- Advanced Data Protection --- */
+"check.advanced_data_protection.title" = "Advanced Data Protection";
+"check.advanced_data_protection.short" = "Enable end-to-end encryption for iCloud data";
+"check.advanced_data_protection.explanation" = "Advanced Data Protection (ADP), introduced in iOS 16.2, extends end-to-end encryption to most iCloud data categories including backups, Photos, Notes, and iCloud Drive. With ADP on, Apple cannot access your data: only you hold the encryption keys. Even a court order to Apple would not produce your data. ANSSI recommends enabling ADP if you use iCloud. Note: you must set up recovery contacts or a recovery key first, because Apple will no longer be able to help with account recovery.";
+"check.advanced_data_protection.guidance" = "Open Settings → [Your Name] → iCloud → Advanced Data Protection\nFirst set up a Recovery Contact or Recovery Key (required)\nTap Turn On Advanced Data Protection and follow the prompts\nVerify the status shows 'On' in the iCloud settings page";
+
+/* --- App Permissions --- */
+"check.app_permissions.title" = "Excessive App Permissions";
+"check.app_permissions.short" = "Review and revoke unnecessary app access";
+"check.app_permissions.explanation" = "Many apps request access to sensitive resources (camera, microphone, contacts, photos, location) well beyond what they actually need. Advertising SDKs inside legitimate apps can quietly harvest this data. Reviewing permissions regularly limits what a rogue app or spyware could access. CISA recommends checking app permissions at least every quarter.";
+"check.app_permissions.guidance" = "Open Settings → Privacy & Security\nReview each category: Location, Contacts, Calendars, Microphone, Camera, Photos\nFor each category, review which apps have access and revoke unnecessary permissions\nPay special attention to apps you rarely use — they should have no persistent access\nConsider deleting apps you no longer use";
+
+/* --- Signal Security Review --- */
+"check.signal.title" = "Signal";
+"check.signal.short" = "Review Signal security practices and linked devices";
+"check.signal.explanation" = "Signal is the recommended messaging app for sensitive communications. If it's installed, you should check a few settings: look for unauthorized linked devices (a known attack vector that allows real-time message interception), turn on registration lock, and review your privacy options. If Signal is not installed, this check passes automatically.";
+"check.signal.guidance" = "Open Signal → Settings (avatar top-left) → Linked Devices\nReview the list of linked devices carefully — remove any you do not recognise\nEnable Registration Lock: Signal → Settings → Account → Registration Lock\nReview Privacy settings: Signal → Settings → Privacy\nRepeat the linked devices check monthly or after any suspicious activity";
+
+/* --- Automatic Updates --- */
+"check.auto_updates.title" = "Automatic Updates";
+"check.auto_updates.short" = "Ensure iOS updates are installed automatically";
+"check.auto_updates.explanation" = "Automatic Updates makes sure your device gets security patches as soon as Apple releases them, without you having to do anything. Zero-day exploits are often patched within hours, and even a short delay leaves your device exposed. CISA includes automatic updates in its baseline mobile security guidance. Both iOS Updates and Security Responses should be turned on.";
+"check.auto_updates.guidance" = "Open Settings → General → Software Update → Automatic Updates\nEnable iOS Updates\nThen go to Settings → Privacy & Security → Background Security Improvements\nMake sure Automatically Install is turned on\nThis ensures both major updates, rapid security patches and background fixes are installed automatically";
+
+/* --- Two-Factor Authentication --- */
+"check.account_2fa.title" = "Two-Factor Authentication";
+"check.account_2fa.short" = "Apple Account must have 2FA enabled";
+"check.account_2fa.explanation" = "Two-factor authentication (2FA) adds a second verification step when signing in to your Apple Account, blocking unauthorized access even if your password is compromised. Without 2FA, a single leaked or guessed password gives full access to iCloud data, Find My, purchases, and account recovery. Apple, ANSSI, and CISA all consider 2FA mandatory. The same applies to all your online accounts: enable 2FA everywhere, using an authenticator app or hardware key rather than SMS when possible.";
+"check.account_2fa.guidance" = "Open Settings → [Your Name] → Sign-In & Security\nVerify that Two-Factor Authentication shows ON\nIf it is not enabled, tap Turn On Two-Factor Authentication and follow the prompts\nAlso review 2FA on your other critical accounts: email, banking, social media\nPrefer authenticator apps (e.g. 2FAS, Ente Auth) or hardware keys over SMS codes";
+
+/* --- Stolen Device Protection --- */
+"check.stolen_device_protection.title" = "Stolen Device Protection";
+"check.stolen_device_protection.short" = "Prevent thieves from changing critical settings";
+"check.stolen_device_protection.explanation" = "Stolen Device Protection (introduced in iOS 17.3) requires biometric authentication and adds security delays when someone tries to perform sensitive actions away from your usual locations. Without it, a thief who knows your passcode can immediately change your Apple Account password, disable Find My, and lock you out of your device. With it on, those changes require Face ID or Touch ID plus a one-hour wait when you're away from home or work. It was designed to stop the 'shoulder surfing' thefts that have been widely reported.";
+"check.stolen_device_protection.guidance" = "Open Settings → Face ID & Passcode (or Touch ID & Passcode)\nEnter your passcode\nScroll down to Stolen Device Protection\nTap Turn On Stolen Device Protection\nFor maximum security, set it to Always require a security delay";
+
+/* --- Analytics --- */
+"check.analytics.title" = "Apple Analytics Disabled";
+"check.analytics.short" = "Disable sharing diagnostics and usage data with Apple";
+"check.analytics.explanation" = "When enabled, your device collects and sends usage data, crash reports, and diagnostics to Apple and potentially to third-party developers. Apple says this data is anonymized, but researchers have shown that analytics data can be tied back to individual users. Turning off analytics sharing reduces your data footprint. It's a minor privacy improvement, but it only takes a minute.";
+"check.analytics.guidance" = "Open Settings → Privacy & Security → Analytics & Improvements\nDisable Share iPhone Analytics\nDisable Share iCloud Analytics\nDisable Improve Siri & Dictation\nDisable Share with App Developers";
+
+/* --- AirDrop --- */
+"check.airdrop.title" = "AirDrop Receiving Off";
+"check.airdrop.short" = "Disable AirDrop reception when not in use";
+"check.airdrop.explanation" = "When AirDrop is set to receive from Everyone or Contacts Only, your device broadcasts its identity via Bluetooth Low Energy to all nearby Apple devices. Researchers have shown that the hash used in AirDrop discovery can be reversed to extract phone numbers and email addresses. AirDrop has also been used for unsolicited content delivery and, in some countries, to identify protest participants. Setting reception to Receiving Off stops this broadcast.";
+"check.airdrop.guidance" = "Open Settings → General → AirDrop\nSelect Receiving Off\nAlternatively: open Control Center, long-press the connectivity panel, and tap AirDrop → Receiving Off\nEnable it temporarily only when you need to receive a file from a trusted contact";
+
+/* --- WeChat --- */
+"check.wechat.title" = "WeChat";
+"check.wechat.short" = "WeChat poses significant security and privacy risks";
+"check.wechat.explanation" = "WeChat does not offer end-to-end encryption for any of its communications. Messages, files, and media are accessible to the platform operator and, by extension, to Chinese authorities under the PRC's data cooperation framework. Citizen Lab has documented content surveillance, censorship, and metadata collection in WeChat. Don't use WeChat for anything sensitive. Having it on your device increases your exposure.";
+"check.wechat.guidance" = "Delete WeChat from your device\nFor communication with contacts in China, consider using Signal (if accessible) or be aware that all WeChat content should be considered monitored\nIf WeChat is operationally required, use it exclusively on a dedicated secondary device isolated from sensitive data and accounts";
+
+/* --- Memory Integrity (MIE / EMTE) --- */
+"check.memory_integrity.title" = "Hardware Memory Protection";
+"check.memory_integrity.short" = "Check if your device has built-in memory attack protection";
+"check.memory_integrity.explanation" = "Starting with iPhone 17 and iPhone Air, Apple introduced Memory Integrity Enforcement (MIE), a hardware-level defense against common memory attacks like buffer overflows and use-after-free exploits. It relies on a feature called Enhanced Memory Tagging Extension (EMTE), built into the A19 and A19 Pro chips. In practice, each memory allocation gets a secret tag, and the chip blocks any access that doesn't match. This protection covers the kernel and over 70 system processes. Older iPhones don't have this hardware and can't be updated to support it.";
+"check.memory_integrity.guidance" = "This check is automatic. The app reads your device model to determine if MIE is supported\nIf your device is from a newer generation, MIE is active by default with no configuration needed\nOlder devices cannot enable this feature as it requires the A19, A19 Pro chip or above\nIf you are considering an upgrade, MIE is one more reason to choose a recent model";
+"memory_integrity.supported" = "EMTE active (FEAT_MTE4)";
+"memory_integrity.not_supported" = "Not available on this hardware";

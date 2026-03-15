@@ -1,0 +1,216 @@
+/* ===== Avertissement de bienvenue ===== */
+"welcome.title" = "Bienvenue dans Verifium";
+"welcome.subtitle" = "AVANT DE COMMENCER";
+"welcome.not_antivirus" = "Cette application n'est pas un antivirus. Les antivirus tiers n'ont aucun effet réel sur iOS en raison du modèle de sécurité d'Apple.";
+"welcome.what_it_does" = "Verifium vous guide à travers les bonnes pratiques de sécurité et de confidentialité recommandées par l'ANSSI, la CISA et Apple.";
+"welcome.manual_review" = "La plupart des vérifications nécessitent une révision manuelle. Complétez la liste pour obtenir un score de sécurité précis pour votre appareil.";
+"welcome.disclaimer" = "Même avec un bon score, votre appareil peut rester vulnérable aux failles zero-day, aux attaques par ingénierie sociale, etc. Cela dit, suivre ce guide participe grandement à votre hygiène numérique.";
+"welcome.cta" = "Vérifions ensemble !";
+
+/* ===== Onglets ===== */
+"tab.dashboard" = "Tableau de bord";
+"tab.checks" = "Vérifications";
+
+/* ===== Catégories ===== */
+"category.device" = "Appareil";
+"category.network" = "Réseau";
+"category.applications" = "Applications";
+"category.privacy" = "Vie privée";
+"category.data_protection" = "Protection des données";
+
+/* ===== Sévérité ===== */
+"severity.low" = "Faible";
+"severity.medium" = "Moyen";
+"severity.high" = "Élevé";
+"severity.critical" = "Critique";
+
+/* ===== Statut ===== */
+"status.passed" = "Réussi";
+"status.failed" = "Échoué";
+"status.warning" = "Avertissement";
+"status.checking" = "Vérification…";
+"status.manual_required" = "Action requise";
+"status.manual_passed" = "Vérifié ✓";
+"status.manual_failed" = "Non conforme ✗";
+
+/* ===== Tableau de bord ===== */
+"dashboard.title" = "AUDIT DE SÉCURITÉ";
+"dashboard.subtitle" = "Santé de l'appareil";
+"dashboard.last_scan" = "Dernier audit";
+"dashboard.score_label" = "SCORE DE SÉCURITÉ";
+"dashboard.scanning" = "Analyse en cours…";
+"dashboard.run_scan" = "RELANCER L'AUDIT";
+"dashboard.critical_issues" = "PROBLÈMES CRITIQUES";
+"dashboard.categories" = "CATÉGORIES";
+"dashboard.reset_manual" = "Réinitialiser les vérifications manuelles";
+
+"score.excellent" = "Excellente posture";
+"score.good" = "Bon";
+"score.moderate" = "Risque modéré";
+"score.critical" = "Critique : actions requises";
+"score.incomplete" = "Complétez la liste pour voir votre score";
+
+"stats.passing" = "Réussis";
+"stats.failing" = "Échoués";
+"stats.pending" = "En attente";
+
+/* ===== Liste des vérifications ===== */
+"checks.search" = "Rechercher…";
+"checks.no_results" = "Aucune vérification ne correspond à votre filtre.";
+
+"filter.all" = "Tout";
+"filter.failing" = "Échoués";
+"filter.pending" = "En attente";
+"filter.passing" = "Réussis";
+
+/* ===== Vue détail ===== */
+"detail.why" = "POURQUOI C'EST IMPORTANT";
+"detail.how_to" = "COMMENT VÉRIFIER";
+"detail.detected" = "VALEUR DÉTECTÉE";
+"detail.sources" = "RÉFÉRENCES";
+"detail.manual_prompt" = "AVEZ-VOUS VÉRIFIÉ CE POINT ?";
+"detail.mark_pass" = "Conforme";
+"detail.mark_fail" = "Non conforme";
+"detail.reset" = "Réinitialiser la vérification";
+"detail.open_settings" = "Ouvrir les Réglages";
+"detail.settings_disclaimer" = "iOS ne permet pas aux apps d'ouvrir des réglages spécifiques. Veuillez naviguer manuellement vers la bonne section en suivant les étapes ci-dessus.";
+
+/* ===== Chaînes dynamiques ===== */
+"ad_tracking.enabled" = "Suivi publicitaire ACTIVÉ";
+"ad_tracking.disabled" = "Suivi publicitaire DÉSACTIVÉ";
+"ad_tracking.restricted" = "Restreint par politique";
+"ad_tracking.not_set" = "Non défini";
+"location.enabled" = "Services de localisation ACTIVÉS";
+"location.disabled" = "Services de localisation DÉSACTIVÉS";
+"vpn.not_detected" = "Aucun VPN détecté";
+"app.installed" = "%@ est installé";
+"app.not_installed" = "%@ non trouvé";
+"reboot.days_ago" = "%d jours depuis le dernier redémarrage";
+"wifi.enabled" = "Wi-Fi ACTIVÉ";
+"wifi.disabled" = "Wi-Fi DÉSACTIVÉ";
+"lockdown.enabled" = "Mode Isolement ACTIVÉ";
+"lockdown.disabled" = "Mode Isolement DÉSACTIVÉ";
+
+/* ============================= */
+/* ===== CONTENU DES CHECKS ==== */
+/* ============================= */
+
+"check.passcode.title" = "Code d'accès fort";
+"check.passcode.short" = "Utiliser un code alphanumérique (8+ caractères)";
+"check.passcode.explanation" = "Un code PIN à 6 chiffres peut être forcé en quelques minutes avec du matériel spécialisé. Un code alphanumérique de 8 caractères ou plus est bien plus difficile à casser et résiste à la plupart des attaques de déverrouillage physique, y compris via les outils d'investigation comme Cellebrite. L'ANSSI et la CISA recommandent de désactiver le code simple au profit d'un code alphanumérique complexe.";
+"check.passcode.guidance" = "Ouvrez Réglages → Face ID et code (ou Touch ID et code)\nAppuyez sur Changer le code\nAppuyez sur Options du code et sélectionnez Code alphanumérique personnalisé\nChoisissez une phrase de passe de 8+ caractères mêlant lettres, chiffres et symboles\nÉvitez les mots du dictionnaire ou les schémas prévisibles, utiliser éventuellement une phrase";
+
+"check.os_version.title" = "Mise à jour système";
+"check.os_version.short" = "S'assurer que la dernière version d'iOS est installée";
+"check.os_version.explanation" = "Apple publie des correctifs de sécurité à chaque mise à jour iOS. Utiliser un système obsolète laisse des vulnérabilités connues non corrigées, et de nombreuses attaques ciblées exploitent ces failles précises. La CISA et l'ANSSI recommandent la mise à jour des systèmes mobiles comme mesure essentielle. Les exploits sans clic sont souvent corrigés en quelques jours ; retarder les mises à jour vous expose davantage.";
+"check.os_version.guidance" = "Allez dans Réglages → Général → Mise à jour logicielle\nInstallez immédiatement toute mise à jour disponible\nActivez les mises à jour automatiques pour rester à jour";
+
+"check.lockdown_mode.title" = "Mode Isolement";
+"check.lockdown_mode.short" = "Doit être activé pour les profils à risque élevé";
+"check.lockdown_mode.explanation" = "Le mode Isolement (introduit dans iOS 16) réduit fortement les surfaces d'attaque en désactivant les aperçus de messages, les connexions filaires à des appareils inconnus, les fonctionnalités web complexes, etc. Il a été conçu pour contrer les attaques utilisées par des vendeurs de logiciels espions comme NSO Group (Pegasus) et Paragon (Graphite). Le rapport sur les cyber-menaces 2025 de l'ANSSI cite le mode Isolement comme l'une des protections les plus solides sur iOS.";
+"check.lockdown_mode.guidance" = "Ouvrez Réglages → Confidentialité et sécurité\nFaites défiler jusqu'au Mode Isolement\nAppuyez sur Activer le mode Isolement\nConfirmez et redémarrez l'appareil\nNote : certaines applications et fonctionnalités seront restreintes, c'est intentionnel";
+
+/* --- Redémarrage régulier --- */
+"check.reboot_time.title" = "Redémarrage régulier";
+"check.reboot_time.short" = "Redémarrer l'appareil au moins toutes les deux semaines";
+"check.reboot_time.explanation" = "Redémarrer votre iPhone vide la mémoire volatile et tue tous les processus en cours, y compris d'éventuels implants résidant uniquement en mémoire. Beaucoup d'implants avancés (comme les charges zero-click de Pegasus) ne survivent pas à un redémarrage car ils reposent sur une injection non persistante. Amnesty International et Citizen Lab recommandent des redémarrages périodiques. Tous les 14 jours est un minimum raisonnable ; plus souvent si vous êtes une cible à haut risque.";
+"check.reboot_time.guidance" = "Cette vérification est automatique — l'application détecte quand votre appareil a été redémarré pour la dernière fois\nSi plus de 14 jours : maintenez le bouton latéral et le volume bas, puis glissez pour éteindre\nPatientez quelques secondes, puis rallumez l'appareil\nEnvisagez de programmer un rappel récurrent pour redémarrer toutes les une à deux semaines";
+
+"check.ad_tracking.title" = "Désactiver la publicité personnalisée";
+"check.ad_tracking.short" = "L'identifiant publicitaire (AdID) doit être désactivé";
+"check.ad_tracking.explanation" = "L'identifiant publicitaire Apple (IDFA) permet aux applications et aux réseaux publicitaires de construire un profil de vos comportements. Même apparemment anonymisées, les données liées à l'IDFA ont été à plusieurs reprises ré-identifiées pour retrouver des individus précis. Le désactiver empêche les annonceurs et les courtiers en données de vous suivre entre les applications.";
+"check.ad_tracking.guidance" = "Ouvrez Réglages → Confidentialité et sécurité → Suivi\nDésactivez Autoriser les demandes de suivi\nPuis allez dans Réglages → Confidentialité et sécurité → Publicité Apple\nDésactivez les Publicités personnalisées";
+
+"check.location_services.title" = "Géolocalisation";
+"check.location_services.short" = "L'accès global à la localisation doit être désactivé";
+"check.location_services.explanation" = "Lorsque les services de localisation sont activés, toute application autorisée peut interroger votre position. Plusieurs familles de logiciels espions utilisent les API de localisation pour exfiltrer des coordonnées GPS à votre insu. Même sans logiciel espion, les SDK publicitaires d'applications courantes collectent régulièrement ces données. Désactiver la localisation globalement supprime ce risque. Vous pouvez réactiver des applications spécifiques (cartes, urgences) au besoin.";
+"check.location_services.guidance" = "Ouvrez Réglages → Confidentialité et sécurité → Services de localisation\nDésactivez les Services de localisation\nSi vous avez besoin de navigation : réactivez uniquement pour Plans, réglez sur « En cours d'utilisation »\nExaminez les autorisations de chaque application et révoquez les accès non nécessaires";
+
+"check.bluetooth.title" = "Bluetooth";
+"check.bluetooth.short" = "Désactiver le Bluetooth quand il n'est pas utilisé";
+"check.bluetooth.explanation" = "Le Bluetooth émet un signal persistant et identifiable, exploitable pour le suivi passif par des capteurs à proximité (analytics en magasin, surveillance). Plusieurs classes de vulnérabilités (BlueBorne, KNOB, BIAS) ont permis l'exécution de code à distance via Bluetooth sans appairage. La CISA recommande de désactiver le Bluetooth quand il n'est pas utilisé.";
+"check.bluetooth.guidance" = "Ouvrez Réglages → Bluetooth\nDésactivez le Bluetooth\nNote : l'icône du Centre de contrôle ne fait que déconnecter temporairement : la seule façon propre de le faire est via les Réglages\nActivez uniquement lors de l'utilisation de périphériques de confiance. En environnement sensible, gardez le Bluetooth désactivé en permanence";
+
+"check.wifi.title" = "Wi-Fi";
+"check.wifi.short" = "Désactiver le Wi-Fi quand il n'est pas utilisé";
+"check.wifi.explanation" = "Lorsque le Wi-Fi est activé, votre appareil diffuse des requêtes de sondage listant les réseaux auxquels il s'est déjà connecté. Des écouteurs à proximité peuvent s'en servir pour vous suivre ou attirer votre appareil vers un point d'accès malveillant (attaque Evil Twin). Désactiver le Wi-Fi stoppe cette diffusion et empêche toute connexion accidentelle à un réseau malveillant.";
+"check.wifi.guidance" = "Ouvrez Réglages → Wi-Fi\nDésactivez le Wi-Fi\nNote : dans le Centre de contrôle, le bouton ne fait que suspendre la connexion, allez dans Réglages pour un vrai arrêt\nEn environnement sensible, gardez le Wi-Fi désactivé en permanence";
+
+"check.vpn.title" = "VPN";
+"check.vpn.short" = "Router le trafic via un VPN de confiance";
+"check.vpn.explanation" = "Un VPN chiffre tout le trafic quittant votre appareil et le fait transiter par un point de sortie de confiance, ce qui empêche votre FAI ou les opérateurs du réseau local de voir votre trafic. Un VPN domestique (routant par votre propre connexion Internet) est l'option la plus sûre car vous contrôlez le point de sortie.\n\n⚠ Les VPN gratuits ou commerciaux apportent peu de valeur et peuvent enregistrer ou revendre votre trafic. Les VPN sont particulièrement importants lors de voyages dans des pays soumis à une surveillance réseau (ex. Russie, Chine, Iran).";
+"check.vpn.guidance" = "L'application n'a détecté aucun tunnel VPN actif sur cet appareil\nPour un VPN maison : installez WireGuard sur un routeur ou un Raspberry Pi chez vous, puis connectez-vous depuis l'étranger\nSinon, utilisez un VPN réputé avec une politique zéro-log auditée de façon indépendante\nAllez dans Réglages → Général → VPN et gestion des appareils pour configurer";
+
+"check.whatsapp.title" = "WhatsApp";
+"check.whatsapp.short" = "WhatsApp est un vecteur d'attaque sans clic connu";
+"check.whatsapp.explanation" = "Entre 2024 et 2026, WhatsApp a été utilisé comme vecteur d'attaque sans clic à plusieurs reprises. Des vulnérabilités dans sa pile SRTCP et son traitement d'images DNG ont permis l'exécution de code à distance sans aucune interaction. Si WhatsApp n'est pas installé, cette vérification est automatiquement validée. S'il est installé, suivez les étapes ci-dessous pour réduire votre exposition.";
+"check.whatsapp.guidance" = "Bloquer les messages de numéros inconnus : WhatsApp → Réglages → Confidentialité → Avancé → activer Bloquer les messages de comptes inconnus\nVérifier les appareils liés non autorisés : WhatsApp → Réglages → Appareils liés → supprimer ceux que vous ne reconnaissez pas\nActiver la vérification en deux étapes : WhatsApp → Réglages → Compte → Vérification en deux étapes\nMaintenez WhatsApp à jour pour recevoir les correctifs de sécurité\nPour une sécurité maximale, envisagez de passer à Signal ou d'utiliser WhatsApp sur un appareil secondaire dédié";
+
+"check.telegram.title" = "Telegram";
+"check.telegram.short" = "Telegram présente des risques";
+"check.telegram.explanation" = "Les discussions par défaut de Telegram ne sont pas chiffrées de bout en bout : les messages sont stockés en clair sur les serveurs de Telegram. Une enquête de l'OCCRP a documenté une opération d'interception impliquant des métadonnées Telegram et une coopération avec les services de sécurité russes (FSB). Seuls les « Chats secrets » utilisent le chiffrement E2E, et ils ne sont pas activés par défaut. Pour les communications sensibles, Signal est une alternative plus sûre. Si Telegram n'est pas installé, cette vérification est automatiquement validée.";
+"check.telegram.guidance" = "Supprimez Telegram de votre appareil\nPour la communication en groupe, envisagez Signal (groupes avec chiffrement E2E)\nSi Telegram est nécessaire : utilisez uniquement les Chats secrets, activez un code PIN, et n'utilisez jamais Telegram sur un appareil contenant des données sensibles";
+
+"check.icloud_backup.title" = "Sauvegarde iCloud désactivée";
+"check.icloud_backup.short" = "Les sauvegardes iCloud peuvent exposer vos données";
+"check.icloud_backup.explanation" = "Sans Protection avancée des données, les sauvegardes iCloud sont chiffrées mais Apple détient les clés. Elles peuvent donc être transmises aux autorités ou exposées en cas de violation des serveurs Apple. Les sauvegardes standard incluent messages, photos, données de Santé et données d'applications. Pour les profils à risque, désactiver la sauvegarde iCloud supprime cette exposition. Si vous avez besoin de sauvegardes, utilisez une sauvegarde locale chiffrée via Finder/iTunes.";
+"check.icloud_backup.guidance" = "Ouvrez Réglages → [Votre nom] → iCloud → Sauvegarde iCloud\nDésactivez la Sauvegarde iCloud\nPour les sauvegardes locales chiffrées : connectez-vous à un Mac, ouvrez Finder, sélectionnez votre appareil, cochez Chiffrer la sauvegarde locale et définissez un mot de passe fort\nStockez le mot de passe de sauvegarde dans un gestionnaire de mots de passe";
+
+"check.advanced_data_protection.title" = "Protection avancée des données";
+"check.advanced_data_protection.short" = "Activer le chiffrement de bout en bout pour iCloud";
+"check.advanced_data_protection.explanation" = "Protection avancée des données (PAD), introduite dans iOS 16.2, étend le chiffrement de bout en bout à la plupart des données iCloud : sauvegardes, Photos, Notes et iCloud Drive. Avec la PAD activée, Apple ne peut pas accéder à vos données : vous seul détenez les clés. Même une injonction légale adressée à Apple ne permettrait pas de les obtenir. Il est recommandé d'activer la PAD si vous utilisez iCloud. Attention : vous devez d'abord configurer un contact ou une clé de récupération, car Apple ne pourra plus vous aider à récupérer votre compte.";
+"check.advanced_data_protection.guidance" = "Ouvrez Réglages → [Votre nom] → iCloud → Protection avancée des données\nConfigurez d'abord un Contact de récupération ou une Clé de récupération (obligatoire)\nAppuyez sur Activer la protection avancée des données et suivez les instructions\nVérifiez que le statut indique « Activé » dans la page des réglages iCloud";
+
+"check.app_permissions.title" = "Autorisations excessives";
+"check.app_permissions.short" = "Examiner et révoquer les accès inutiles des applications";
+"check.app_permissions.explanation" = "Beaucoup d'applications demandent accès à des ressources sensibles (caméra, micro, contacts, photos, localisation) bien au-delà de ce qu'elles utilisent réellement. Des SDK publicitaires intégrés dans des apps légitimes peuvent collecter ces données en arrière-plan. Vérifier régulièrement les autorisations limite ce qu'une application malveillante ou un logiciel espion pourrait exploiter. La CISA recommande de faire cet audit au moins tous les trimestres.";
+"check.app_permissions.guidance" = "Ouvrez Réglages → Confidentialité et sécurité\nPassez en revue chaque catégorie : Localisation, Contacts, Calendriers, Microphone, Caméra, Photos\nPour chaque catégorie, vérifiez quelles applications ont accès et révoquez les autorisations non nécessaires\nPortez une attention particulière aux applications que vous utilisez rarement — elles ne devraient avoir aucun accès persistant\nEnvisagez de supprimer les applications que vous n'utilisez plus";
+
+"check.signal.title" = "Signal";
+"check.signal.short" = "Vérifier les pratiques de sécurité et les appareils liés Signal";
+"check.signal.explanation" = "Signal est l'application de messagerie recommandée pour les communications sensibles. S'il est installé, vérifiez quelques réglages : recherchez des appareils liés non autorisés (un vecteur d'attaque connu qui permet l'interception des messages en temps réel), activez le verrouillage de l'inscription et passez en revue vos options de confidentialité. Si Signal n'est pas installé, cette vérification est automatiquement validée.";
+"check.signal.guidance" = "Ouvrez Signal → Paramètres (avatar en haut à gauche) → Appareils liés\nExaminez attentivement la liste des appareils liés — supprimez ceux que vous ne reconnaissez pas\nActivez le verrouillage de l'inscription : Signal → Paramètres → Compte → Verrouillage de l'inscription\nVérifiez les paramètres de confidentialité : Signal → Paramètres → Confidentialité\nRépétez la vérification des appareils liés chaque mois ou après toute activité suspecte";
+
+/* --- Mises à jour automatiques --- */
+"check.auto_updates.title" = "Mises à jour automatiques";
+"check.auto_updates.short" = "S'assurer que les mises à jour iOS s'installent automatiquement";
+"check.auto_updates.explanation" = "Les mises à jour automatiques garantissent que votre appareil reçoit les correctifs de sécurité dès qu'Apple les publie, sans que vous ayez à intervenir. Les exploits zero-day sont souvent corrigés en quelques heures, et le moindre délai laisse votre appareil à risque. La CISA inclut les mises à jour automatiques dans ses recommandations de sécurité mobile. Les mises à jour iOS et les installations automatiques urgentes doivent toutes deux être activées.";
+"check.auto_updates.guidance" = "Ouvrez Réglages → Général → Mise à jour logicielle → Mises à jour automatiques\nActivez Mises à jour iOS\nPuis allez dans Réglages → Confidentialité et sécurité → Améliorations de la sécurité en arrière-plan\nVérifiez que Installation automatique est activé\nCela garantit que les correctifs rapides et les corrections en arrière-plan sont installés automatiquement";
+
+/* --- Authentification à deux facteurs --- */
+"check.account_2fa.title" = "Authentification à deux facteurs";
+"check.account_2fa.short" = "Le compte Apple doit avoir l'A2F activée";
+"check.account_2fa.explanation" = "L'authentification à deux facteurs (A2F) ajoute une étape de vérification lors de la connexion à votre compte Apple, bloquant tout accès non autorisé même si votre mot de passe est compromis. Sans A2F, un seul mot de passe divulgué ou deviné donne accès à vos données iCloud, à Localiser, aux achats et à la récupération du compte. Apple, l'ANSSI et la CISA considèrent l'A2F comme obligatoire. Le même principe s'applique à tous vos comptes en ligne : activez l'A2F partout, en privilégiant une application d'authentification ou une clé matérielle plutôt que les codes SMS.";
+"check.account_2fa.guidance" = "Ouvrez Réglages → [Votre nom] → Connexion et sécurité\nVérifiez que l'Authentification à deux facteurs est ACTIVÉE\nSi elle n'est pas activée, appuyez sur Activer l'authentification à deux facteurs et suivez les instructions\nVérifiez également l'A2F sur vos autres comptes critiques : messagerie, banque, réseaux sociaux\nPrivilégiez les applications d'authentification (ex. 2FAS, Ente Auth) ou les clés matérielles aux codes SMS";
+
+/* --- Protection en cas de vol --- */
+"check.stolen_device_protection.title" = "Protection en cas de vol";
+"check.stolen_device_protection.short" = "Empêcher les voleurs de modifier les réglages critiques";
+"check.stolen_device_protection.explanation" = "La Protection en cas de vol (introduite dans iOS 17.3) exige l'authentification biométrique et ajoute des délais de sécurité lorsque quelqu'un tente des actions sensibles loin de vos lieux habituels. Sans elle, un voleur connaissant votre code peut immédiatement changer le mot de passe de votre compte Apple, désactiver Localiser et vous verrouiller hors de votre appareil. Une fois activée, ces modifications nécessitent Face ID ou Touch ID plus un délai d'une heure loin de votre domicile ou lieu de travail. Cette fonctionnalité a été conçue pour contrer les vols par observation du code (« shoulder surfing ») largement médiatisés.";
+"check.stolen_device_protection.guidance" = "Ouvrez Réglages → Face ID et code (ou Touch ID et code)\nEntrez votre code\nFaites défiler jusqu'à Protection en cas de vol\nAppuyez sur Activer la protection en cas de vol\nPour une sécurité maximale, réglez sur Toujours exiger le délai de sécurité";
+
+/* --- Analyse et améliorations --- */
+"check.analytics.title" = "Analyses Apple désactivée";
+"check.analytics.short" = "Désactiver le partage des diagnostics et données d'utilisation";
+"check.analytics.explanation" = "Lorsqu'elles sont activées, votre appareil collecte et envoie des données d'utilisation, rapports d'erreur et diagnostics à Apple et potentiellement aux développeurs tiers. Apple affirme que ces données sont anonymisées, mais des chercheurs ont montré qu'elles peuvent être rattachées à des utilisateurs individuels. Désactiver ce partage réduit votre empreinte numérique. C'est un ajustement mineur, mais ça ne prend qu'une minute.";
+"check.analytics.guidance" = "Ouvrez Réglages → Confidentialité et sécurité → Analyse et améliorations\nDésactivez Partager l'analyse de l'iPhone\nDésactivez Partager l'analyse iCloud\nDésactivez Améliorer Siri et Dictée\nDésactivez Partager avec les développeurs";
+
+/* --- AirDrop --- */
+"check.airdrop.title" = "Réception AirDrop désactivée";
+"check.airdrop.short" = "Désactiver la réception AirDrop quand elle n'est pas utilisée";
+"check.airdrop.explanation" = "Lorsqu'AirDrop est configuré pour recevoir de Tout le monde ou Contacts uniquement, votre appareil diffuse son identité via Bluetooth Low Energy à tous les appareils Apple à proximité. Des chercheurs ont montré que le hash utilisé pour la découverte AirDrop peut être inversé pour extraire des numéros de téléphone et des adresses e-mail. AirDrop a aussi été utilisé pour la diffusion de contenu non sollicité et, dans certains pays, pour identifier des participants à des manifestations. Régler la réception sur Désactivée stoppe cette diffusion.";
+"check.airdrop.guidance" = "Ouvrez Réglages → Général → AirDrop\nSélectionnez Réception désactivée\nAlternativement : ouvrez le Centre de contrôle, appuyez longuement sur le panneau de connectivité, puis appuyez sur AirDrop → Réception désactivée\nActivez-le temporairement uniquement lorsque vous devez recevoir un fichier d'un contact de confiance";
+
+/* --- WeChat --- */
+"check.wechat.title" = "WeChat";
+"check.wechat.short" = "WeChat pose des risques sérieux de sécurité et de confidentialité";
+"check.wechat.explanation" = "WeChat ne propose aucun chiffrement de bout en bout. Les messages, fichiers et médias sont accessibles à l'opérateur de la plateforme et, par extension, aux autorités chinoises dans le cadre de la coopération en matière de données de la RPC. Le Citizen Lab a documenté la surveillance du contenu, la censure et la collecte de métadonnées dans WeChat. N'utilisez pas WeChat pour quoi que ce soit de sensible. Sa présence sur votre appareil augmente votre exposition.";
+"check.wechat.guidance" = "Supprimez WeChat de votre appareil\nPour communiquer avec des contacts en Chine, envisagez Signal (si accessible) ou soyez conscient que tout contenu WeChat doit être considéré comme surveillé\nSi WeChat est opérationnellement nécessaire, utilisez-le exclusivement sur un appareil secondaire dédié, isolé de vos données et comptes sensibles";
+
+/* --- Protection mémoire (MIE / EMTE) --- */
+"check.memory_integrity.title" = "Protection mémoire matérielle";
+"check.memory_integrity.short" = "Vérifier si votre appareil dispose d'une protection matérielle de la mémoire";
+"check.memory_integrity.explanation" = "A partir de l'iPhone 17 et de l'iPhone Air, Apple a introduit la protection de l'intégrité de la mémoire (MIE), une défense matérielle contre les attaques mémoire courantes comme les dépassements de tampon et les exploits use-after-free. Elle repose sur l'EMTE (Enhanced Memory Tagging Extension), intégrée aux puces A19 et A19 Pro. Concrètement, chaque allocation mémoire reçoit un tag secret, et la puce bloque tout accès qui ne correspond pas. Cette protection couvre le noyau et plus de 70 processus système. Les anciens iPhone n'ont pas ce matériel et ne peuvent pas en bénéficier par mise à jour.";
+"check.memory_integrity.guidance" = "Cette vérification est automatique. L'application lit le modèle de votre appareil pour déterminer si MIE est disponible\nSi votre appareil est de dernière génération, MIE est actif par défaut sans aucune configuration\nLes appareils plus anciens ne peuvent pas activer cette fonctionnalité car elle nécessite la puce A19, A19 Pro ou supérieure\nSi vous envisagez un changement de téléphone, MIE est un argument de plus en faveur d'un modèle récent";
+"memory_integrity.supported" = "EMTE actif (FEAT_MTE4)";
+"memory_integrity.not_supported" = "Non disponible sur cet appareil";
