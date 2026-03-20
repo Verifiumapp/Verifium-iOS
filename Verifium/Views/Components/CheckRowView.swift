@@ -12,7 +12,7 @@ struct CheckRowView: View {
                     .fill(check.status.color.opacity(0.12))
                     .frame(width: 40, height: 40)
                 Image(systemName: check.status.icon)
-                    .font(.system(size: 18))
+                    .scaledFont(size: 18, relativeTo: .body)
                     .foregroundColor(check.status.color)
                     .shadow(color: check.status.color.opacity(0.6), radius: 4)
             }
@@ -20,14 +20,14 @@ struct CheckRowView: View {
             // Content
             VStack(alignment: .leading, spacing: 4) {
                 Text(check.title)
-                    .font(.system(size: 14, weight: .semibold))
+                    .scaledFont(size: 14, weight: .semibold, relativeTo: .subheadline)
                     .foregroundColor(AppColors.textPrimary)
                     .lineLimit(1)
 
                 HStack(spacing: 6) {
                     SeverityDot(severity: check.severity)
                     Text(check.shortDescription)
-                        .font(.system(size: 12))
+                        .scaledFont(size: 12, relativeTo: .footnote)
                         .foregroundColor(AppColors.textSecondary)
                         .lineLimit(1)
                 }
@@ -38,29 +38,29 @@ struct CheckRowView: View {
             // Detected value or chevron
             VStack(alignment: .trailing, spacing: 2) {
                 if let value = check.detectedValue {
-                    if check.id == "os_version", value.contains("|") {
-                        let parts = value.split(separator: "|")
+                    if let versions = check.osVersionComponents {
                         HStack(spacing: 3) {
-                            Text(String(parts[0]))
+                            Text(versions.current)
                                 .foregroundColor(AppColors.red)
                             Image(systemName: "arrow.right")
-                                .font(.system(size: 7))
+                                .scaledFont(size: 7, relativeTo: .caption2)
                                 .foregroundColor(AppColors.textSecondary)
-                            Text(String(parts[1]))
+                            Text(versions.latest)
                                 .foregroundColor(AppColors.green)
                         }
-                        .font(.system(size: 10, weight: .medium, design: .monospaced))
+                        .scaledFont(size: 10, weight: .medium, design: .monospaced, relativeTo: .caption)
                         .lineLimit(1)
                     } else {
                         Text(value)
-                            .font(.system(size: 10, design: .monospaced))
+                            .scaledFont(size: 10, design: .monospaced, relativeTo: .caption)
                             .foregroundColor(AppColors.textMono)
                             .lineLimit(1)
                     }
                 }
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 11, weight: .semibold))
+                    .scaledFont(size: 11, weight: .semibold, relativeTo: .caption)
                     .foregroundColor(AppColors.textSecondary)
+                    .accessibilityHidden(true)
             }
         }
         .padding(.horizontal, 14)

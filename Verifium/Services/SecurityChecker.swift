@@ -204,6 +204,7 @@ final class SecurityChecker {
     // -------------------------------------------------------------------------
 
     /// Run a single automatic check by ID and return its result.
+    @MainActor
     func runCheck(id: String) async -> (CheckStatus, String?) {
         switch id {
         case "os_version":        return await checkOSVersion()
@@ -227,7 +228,7 @@ final class SecurityChecker {
     private func checkOSVersion() async -> (CheckStatus, String?) {
         let current = UIDevice.current.systemVersion
         guard let latest = await VersionService.fetchLatestVersion() else {
-            return (.failed, current)
+            return (.warning, NSLocalizedString("os_version.unavailable", comment: ""))
         }
         if VersionService.isUpToDate(current: current, latest: latest) {
             return (.passed, current)
@@ -320,6 +321,12 @@ final class SecurityChecker {
 
     // MARK: Reboot Time
 
+    private static let rebootFormatter: RelativeDateTimeFormatter = {
+        let f = RelativeDateTimeFormatter()
+        f.unitsStyle = .full
+        return f
+    }()
+
     private func checkRebootTime() -> (CheckStatus, String?) {
         var tv = timeval()
         var tvSize = MemoryLayout<timeval>.size
@@ -327,11 +334,9 @@ final class SecurityChecker {
         guard result == 0 else { return (.warning, nil) }
 
         let bootDate = Date(timeIntervalSince1970: Double(tv.tv_sec))
-        let days = Calendar.current.dateComponents([.day], from: bootDate, to: Date()).day ?? 0
+        let days = Calendar.current.dateComponents([.day], from: bootDate, to: .now).day ?? 0
 
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .full
-        let relStr = formatter.localizedString(for: bootDate, relativeTo: Date())
+        let relStr = Self.rebootFormatter.localizedString(for: bootDate, relativeTo: .now)
 
         if days > 30 {
             return (.failed, String(format: NSLocalizedString("reboot.days_ago", comment: ""), days))

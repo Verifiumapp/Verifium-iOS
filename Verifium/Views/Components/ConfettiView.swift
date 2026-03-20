@@ -1,82 +1,110 @@
 import SwiftUI
-import UIKit
 
-/// Full-screen confetti particle effect using CAEmitterLayer.
-struct ConfettiView: UIViewRepresentable {
+/// Radial starburst celebration that emanates from the center of its frame.
+/// Particles expand outward, glow, then fade — like an Apple Watch ring completion.
+struct CelebrationView: View {
+    let color: Color
+    var onComplete: (() -> Void)? = nil
 
-    func makeUIView(context: Context) -> UIView {
-        let host = UIView()
-        host.backgroundColor = .clear
-        host.isUserInteractionEnabled = false
+    @State private var particles: [Particle] = []
+    @State private var burst = false
+    @State private var glowOpacity: Double = 0
+    @State private var glowScale: CGFloat = 0.6
 
-        let emitter = CAEmitterLayer()
-        emitter.emitterShape = .line
-        emitter.renderMode = .additive
+    private static let count = 42
+    private static let colors: [Color] = [
+        AppColors.teal, AppColors.blue, AppColors.purple,
+        AppColors.green, AppColors.yellow, AppColors.orange,
+    ]
 
-        let colors: [UIColor] = [
-            UIColor(AppColors.teal),
-            UIColor(AppColors.blue),
-            UIColor(AppColors.purple),
-            UIColor(AppColors.green),
-            UIColor(AppColors.orange),
-            UIColor(AppColors.yellow),
-        ]
-
-        let image = Self.confettiImage()
-
-        emitter.emitterCells = colors.map { color in
-            let cell = CAEmitterCell()
-            cell.birthRate = 12
-            cell.lifetime = 20
-            cell.velocity = 180
-            cell.velocityRange = 80
-            cell.emissionLongitude = .pi / 2       // downward
-            cell.emissionRange = .pi / 4            // +/-45 deg
-            cell.spin = 3
-            cell.spinRange = 6
-            cell.scale = 0.15
-            cell.scaleRange = 0.03
-            cell.scaleSpeed = -0.005
-            cell.alphaSpeed = -0.2
-            cell.color = color.cgColor
-            cell.contents = image?.cgImage
-            cell.yAcceleration = 60                 // gentle gravity
-            return cell
-        }
-
-        host.layer.addSublayer(emitter)
-        context.coordinator.emitter = emitter
-
-        // Stop emitting after 2s, let remaining particles fall
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            emitter.birthRate = 0
-        }
-
-        return host
+    struct Particle: Identifiable {
+        let id: Int
+        let angle: Double
+        let distance: CGFloat
+        let size: CGFloat
+        let color: Color
+        let delay: Double
+        let rotationDir: Double
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {
-        // Update emitter position to match current view bounds
-        if let emitter = context.coordinator.emitter {
-            let bounds = uiView.bounds
-            emitter.emitterPosition = CGPoint(x: bounds.midX, y: -10)
-            emitter.emitterSize = CGSize(width: bounds.width * 1.2, height: 1)
+    var body: some View {
+        ZStack {
+            // Central glow pulse — big and dramatic
+            Circle()
+                .fill(
+                    RadialGradient(
+                        colors: [color.opacity(0.6), color.opacity(0.15), color.opacity(0)],
+                        center: .center,
+                        startRadius: 0,
+                        endRadius: 260
+                    )
+                )
+                .frame(width: 520, height: 520)
+                .scaleEffect(glowScale)
+                .opacity(glowOpacity)
+                .blur(radius: 30)
+
+            // Particles
+            ForEach(particles) { p in
+                RoundedRectangle(cornerRadius: p.size > 6 ? 2.5 : p.size / 2)
+                    .fill(p.color)
+                    .frame(width: p.size, height: p.size * 0.55)
+                    .shadow(color: p.color.opacity(0.9), radius: 6)
+                    .rotationEffect(.degrees(burst ? p.rotationDir * 420 : 0))
+                    .offset(
+                        x: burst ? cos(p.angle) * p.distance : 0,
+                        y: burst ? sin(p.angle) * p.distance : 0
+                    )
+                    .scaleEffect(burst ? 0.05 : 1.2)
+                    .opacity(burst ? 0 : 1)
+                    .animation(
+                        .easeOut(duration: 1.6).delay(p.delay),
+                        value: burst
+                    )
+            }
+        }
+        .allowsHitTesting(false)
+        .onAppear {
+            generateParticles()
+
+            // Glow: punch in fast, expand, then fade
+            withAnimation(.spring(response: 0.25, dampingFraction: 0.5)) {
+                glowOpacity = 1
+                glowScale = 1.15
+            }
+            withAnimation(.easeOut(duration: 1.4).delay(0.5)) {
+                glowOpacity = 0
+                glowScale = 1.3
+            }
+
+            // Burst particles outward
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(50))
+                burst = true
+            }
+
+            // Cleanup
+            Task { @MainActor in
+                try? await Task.sleep(for: .seconds(2.2))
+                onComplete?()
+            }
         }
     }
 
-    func makeCoordinator() -> Coordinator { Coordinator() }
-
-    final class Coordinator {
-        var emitter: CAEmitterLayer?
-    }
-
-    /// Small rounded-rect image used as confetti piece (tinted by CAEmitterCell.color).
-    private static func confettiImage() -> UIImage? {
-        let size = CGSize(width: 12, height: 8)
-        let renderer = UIGraphicsImageRenderer(size: size)
-        return renderer.image { ctx in
-            UIColor.white.setFill()
-            UIBezierPath(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 1.5).fill(with: .normal, alpha: 1)
+    private func generateParticles() {
+        var result: [Particle] = []
+        for i in 0..<Self.count {
+            let angle = Double.random(in: 0...(2 * .pi))
+            let distance = CGFloat.random(in: 140...340)
+            let size = CGFloat.random(in: 4...11)
+            let color = Self.colors[i % Self.colors.count]
+            let delay = Double.random(in: 0...0.2)
+            let dir: Double = Bool.random() ? 1 : -1
+            result.append(Particle(
+                id: i, angle: angle, distance: distance,
+                size: size, color: color, delay: delay, rotationDir: dir
+            ))
         }
+        particles = result
     }
 }

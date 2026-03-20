@@ -10,6 +10,8 @@
 /* ===== Onglets ===== */
 "tab.dashboard" = "Tableau de bord";
 "tab.checks" = "Vérifications";
+"tab.leaderboard" = "Classement";
+"tab.settings" = "Réglages";
 
 /* ===== Catégories ===== */
 "category.device" = "Appareil";
@@ -43,12 +45,15 @@
 "dashboard.critical_issues" = "PROBLÈMES CRITIQUES";
 "dashboard.categories" = "CATÉGORIES";
 "dashboard.reset_manual" = "Réinitialiser les vérifications manuelles";
+"dashboard.category_hint" = "Afficher les vérifications de cette catégorie";
 
 "score.excellent" = "Excellente posture";
 "score.good" = "Bon";
 "score.moderate" = "Risque modéré";
 "score.critical" = "Critique : actions requises";
-"score.incomplete" = "Complétez la liste pour voir votre score";
+"score.incomplete" = "Complétez la liste pour voir votre score final";
+
+"points.unit" = "pts";
 
 "stats.passing" = "Réussis";
 "stats.failing" = "Échoués";
@@ -88,6 +93,7 @@
 "reboot.days_ago" = "%d jours depuis le dernier redémarrage";
 "wifi.enabled" = "Wi-Fi ACTIVÉ";
 "wifi.disabled" = "Wi-Fi DÉSACTIVÉ";
+"os_version.unavailable" = "Vérification en échec: vérifiez votre connexion";
 "lockdown.enabled" = "Mode Isolement ACTIVÉ";
 "lockdown.disabled" = "Mode Isolement DÉSACTIVÉ";
 
@@ -138,16 +144,16 @@
 
 "check.vpn.title" = "VPN";
 "check.vpn.short" = "Router le trafic via un VPN de confiance";
-"check.vpn.explanation" = "Un VPN chiffre tout le trafic quittant votre appareil et le fait transiter par un point de sortie de confiance, ce qui empêche votre FAI ou les opérateurs du réseau local de voir votre trafic. Un VPN domestique (routant par votre propre connexion Internet) est l'option la plus sûre car vous contrôlez le point de sortie.\n\n⚠ Les VPN gratuits ou commerciaux apportent peu de valeur et peuvent enregistrer ou revendre votre trafic. Les VPN sont particulièrement importants lors de voyages dans des pays soumis à une surveillance réseau (ex. Russie, Chine, Iran).";
+"check.vpn.explanation" = "Un VPN chiffre tout le trafic quittant votre appareil et le fait transiter par un point de sortie de confiance, ce qui empêche votre FAI ou les opérateurs du réseau local de voir votre trafic. Un VPN domestique (routant par votre propre connexion Internet) est l'option la plus sûre car vous contrôlez le point de sortie.\n\n⚠ Les VPN gratuits ou commerciaux peuvent apporter des risques (par ex. enregistrer ou revendre votre trafic). Les VPN sont particulièrement importants lors de voyages dans des pays soumis à une surveillance réseau.";
 "check.vpn.guidance" = "L'application n'a détecté aucun tunnel VPN actif sur cet appareil\nPour un VPN maison : installez WireGuard sur un routeur ou un Raspberry Pi chez vous, puis connectez-vous depuis l'étranger\nSinon, utilisez un VPN réputé avec une politique zéro-log auditée de façon indépendante\nAllez dans Réglages → Général → VPN et gestion des appareils pour configurer";
 
 "check.whatsapp.title" = "WhatsApp";
 "check.whatsapp.short" = "WhatsApp est un vecteur d'attaque sans clic connu";
 "check.whatsapp.explanation" = "Entre 2024 et 2026, WhatsApp a été utilisé comme vecteur d'attaque sans clic à plusieurs reprises. Des vulnérabilités dans sa pile SRTCP et son traitement d'images DNG ont permis l'exécution de code à distance sans aucune interaction. Si WhatsApp n'est pas installé, cette vérification est automatiquement validée. S'il est installé, suivez les étapes ci-dessous pour réduire votre exposition.";
-"check.whatsapp.guidance" = "Bloquer les messages de numéros inconnus : WhatsApp → Réglages → Confidentialité → Avancé → activer Bloquer les messages de comptes inconnus\nVérifier les appareils liés non autorisés : WhatsApp → Réglages → Appareils liés → supprimer ceux que vous ne reconnaissez pas\nActiver la vérification en deux étapes : WhatsApp → Réglages → Compte → Vérification en deux étapes\nMaintenez WhatsApp à jour pour recevoir les correctifs de sécurité\nPour une sécurité maximale, envisagez de passer à Signal ou d'utiliser WhatsApp sur un appareil secondaire dédié";
+"check.whatsapp.guidance" = "Activer les Paramètres de compte stricts : WhatsApp → Réglages → Confidentialité → Avancé → activer Paramètres de compte stricts (verrouille votre compte sur les options les plus restrictives et bloque les pièces jointes des contacts inconnus)\nBloquer les messages de numéros inconnus : WhatsApp → Réglages → Confidentialité → Avancé → activer Bloquer les messages de comptes inconnus\nVérifier les appareils liés non autorisés : WhatsApp → Réglages → Appareils connectés → supprimer ceux que vous ne reconnaissez pas\nActiver la vérification en deux étapes : WhatsApp → Réglages → Compte → Vérification en deux étapes\nMaintenez WhatsApp à jour pour recevoir les correctifs de sécurité\nPour une sécurité maximale, envisagez de passer à Signal ou d'utiliser WhatsApp sur un appareil secondaire dédié";
 
 "check.telegram.title" = "Telegram";
-"check.telegram.short" = "Telegram présente des risques";
+"check.telegram.short" = "Telegram n'est pas une application respectueuse de la vie privée";
 "check.telegram.explanation" = "Les discussions par défaut de Telegram ne sont pas chiffrées de bout en bout : les messages sont stockés en clair sur les serveurs de Telegram. Une enquête de l'OCCRP a documenté une opération d'interception impliquant des métadonnées Telegram et une coopération avec les services de sécurité russes (FSB). Seuls les « Chats secrets » utilisent le chiffrement E2E, et ils ne sont pas activés par défaut. Pour les communications sensibles, Signal est une alternative plus sûre. Si Telegram n'est pas installé, cette vérification est automatiquement validée.";
 "check.telegram.guidance" = "Supprimez Telegram de votre appareil\nPour la communication en groupe, envisagez Signal (groupes avec chiffrement E2E)\nSi Telegram est nécessaire : utilisez uniquement les Chats secrets, activez un code PIN, et n'utilisez jamais Telegram sur un appareil contenant des données sensibles";
 
@@ -169,7 +175,7 @@
 "check.signal.title" = "Signal";
 "check.signal.short" = "Vérifier les pratiques de sécurité et les appareils liés Signal";
 "check.signal.explanation" = "Signal est l'application de messagerie recommandée pour les communications sensibles. S'il est installé, vérifiez quelques réglages : recherchez des appareils liés non autorisés (un vecteur d'attaque connu qui permet l'interception des messages en temps réel), activez le verrouillage de l'inscription et passez en revue vos options de confidentialité. Si Signal n'est pas installé, cette vérification est automatiquement validée.";
-"check.signal.guidance" = "Ouvrez Signal → Paramètres (avatar en haut à gauche) → Appareils liés\nExaminez attentivement la liste des appareils liés — supprimez ceux que vous ne reconnaissez pas\nActivez le verrouillage de l'inscription : Signal → Paramètres → Compte → Verrouillage de l'inscription\nVérifiez les paramètres de confidentialité : Signal → Paramètres → Confidentialité\nRépétez la vérification des appareils liés chaque mois ou après toute activité suspecte";
+"check.signal.guidance" = "Ouvrez Signal → Paramètres (avatar en haut à gauche) → Appareils liés\nExaminez attentivement la liste des appareils liés : supprimez ceux que vous ne reconnaissez pas\nActivez le verrouillage de l'inscription : Signal → Paramètres → Compte → Verrouillage de l'inscription\nVérifiez les paramètres de confidentialité : Signal → Paramètres → Confidentialité\nRépétez la vérification des appareils liés chaque mois ou après toute activité suspecte";
 
 /* --- Mises à jour automatiques --- */
 "check.auto_updates.title" = "Mises à jour automatiques";
@@ -203,8 +209,8 @@
 
 /* --- WeChat --- */
 "check.wechat.title" = "WeChat";
-"check.wechat.short" = "WeChat pose des risques sérieux de sécurité et de confidentialité";
-"check.wechat.explanation" = "WeChat ne propose aucun chiffrement de bout en bout. Les messages, fichiers et médias sont accessibles à l'opérateur de la plateforme et, par extension, aux autorités chinoises dans le cadre de la coopération en matière de données de la RPC. Le Citizen Lab a documenté la surveillance du contenu, la censure et la collecte de métadonnées dans WeChat. N'utilisez pas WeChat pour quoi que ce soit de sensible. Sa présence sur votre appareil augmente votre exposition.";
+"check.wechat.short" = "WeChat soulève des risques de sécurité et de confidentialité";
+"check.wechat.explanation" = "WeChat ne propose aucun chiffrement de bout en bout. Les messages, fichiers et médias sont accessibles à l'opérateur de la plateforme et, par extension, aux autorités chinoises. Le Citizen Lab a documenté la surveillance du contenu, la censure et la collecte de métadonnées dans WeChat. N'utilisez pas WeChat pour quoi que ce soit de sensible. Sa présence sur votre appareil augmente votre exposition.";
 "check.wechat.guidance" = "Supprimez WeChat de votre appareil\nPour communiquer avec des contacts en Chine, envisagez Signal (si accessible) ou soyez conscient que tout contenu WeChat doit être considéré comme surveillé\nSi WeChat est opérationnellement nécessaire, utilisez-le exclusivement sur un appareil secondaire dédié, isolé de vos données et comptes sensibles";
 
 /* --- Protection mémoire (MIE / EMTE) --- */
@@ -214,3 +220,34 @@
 "check.memory_integrity.guidance" = "Cette vérification est automatique. L'application lit le modèle de votre appareil pour déterminer si MIE est disponible\nSi votre appareil est de dernière génération, MIE est actif par défaut sans aucune configuration\nLes appareils plus anciens ne peuvent pas activer cette fonctionnalité car elle nécessite la puce A19, A19 Pro ou supérieure\nSi vous envisagez un changement de téléphone, MIE est un argument de plus en faveur d'un modèle récent";
 "memory_integrity.supported" = "EMTE actif (FEAT_MTE4)";
 "memory_integrity.not_supported" = "Non disponible sur cet appareil";
+
+/* ===== Classement ===== */
+"leaderboard.subtitle" = "CLASSEMENT SÉCURITÉ";
+"leaderboard.your_rank" = "TON RANG";
+"leaderboard.you_badge" = "TOI";
+"leaderboard.disclaimer" = "Ce classement est entièrement fictif et n'a qu'une vocation ludique. Les scores des personas sont fixes et ne reflètent aucune donnée réelle. Verifium ne collecte aucune donnée.";
+
+/* --- Personas du classement --- */
+"persona.grandma" = "Ta Grand-Mère";
+"persona.flat_earther" = "Platiste";
+"persona.boomer" = "Boomer";
+"persona.ignorant" = "L'ignorant";
+"persona.nosy_neighbor" = "Ton Voisin";
+"persona.average_joe" = "Monsieur Tout-le-monde";
+"persona.cool_uncle" = "Tonton Cool";
+"persona.manager" = "Ton Manager";
+"persona.tech_bro" = "Tech Bro";
+"persona.wannabe_hacker" = "Apprenti Hacker";
+"persona.whistleblower" = "Lanceur d'Alerte";
+"persona.paranoid_ninja" = "Ninja Parano";
+
+/* ===== Réglages ===== */
+"settings.actions" = "ACTIONS";
+"settings.about" = "À PROPOS";
+"settings.about_description" = "Verifium est un auditeur de sécurité et de confidentialité pour iOS, libre et open source (disponible sur GitHub).";
+"settings.app_version" = "Version de l'app";
+"settings.ios_version" = "Version iOS";
+"settings.show_welcome" = "Afficher la bannière de bienvenue";
+"settings.legal" = "MENTIONS LÉGALES";
+"settings.legal_notice" = "Copyright © 2026 Verifium.app. Tous droits réservés, sauf dans la mesure autorisée par la licence GNU General Public License v3.0 (GPL-3.0).";
+"settings.privacy_policy" = "Politique de confidentialité";

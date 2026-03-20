@@ -10,8 +10,6 @@ struct ScoreRingView: View {
     private let lineWidth: CGFloat = 10
     private let glowRadius: CGFloat = 8
 
-    @State private var spinAngle: Double = 0
-
     var body: some View {
         ZStack {
             // Track
@@ -19,34 +17,13 @@ struct ScoreRingView: View {
                 .stroke(AppColors.cardBorder, lineWidth: lineWidth)
 
             if isScanning {
-                // Spinning arc while scanning
-                Circle()
-                    .trim(from: 0, to: 0.25)
-                    .stroke(
-                        AppColors.teal.opacity(0.6),
-                        style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
-                    )
-                    .rotationEffect(.degrees(spinAngle))
-                    .shadow(color: AppColors.teal.opacity(0.4), radius: glowRadius)
-                    .onAppear {
-                        withAnimation(.linear(duration: 1.2).repeatForever(autoreverses: false)) {
-                            spinAngle = 360
-                        }
-                    }
-                    .onDisappear { spinAngle = 0 }
+                // Spinning arc while scanning (own @State so animation resets cleanly)
+                ScanningArc(lineWidth: lineWidth, glowRadius: glowRadius)
             } else {
-                // Progress arc
+                // Progress arc — solid color, no gradient seam
                 Circle()
                     .trim(from: 0, to: progress)
-                    .stroke(
-                        AngularGradient(
-                            colors: [color.opacity(0.6), color],
-                            center: .center,
-                            startAngle: .degrees(-90),
-                            endAngle: .degrees(270)
-                        ),
-                        style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
-                    )
+                    .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                     .rotationEffect(.degrees(-90))
                     .shadow(color: color.opacity(0.5), radius: glowRadius)
                     .animation(.easeOut(duration: 0.8), value: progress)
@@ -60,19 +37,45 @@ struct ScoreRingView: View {
             } else if isKnown {
                 VStack(spacing: 2) {
                     Text(grade)
-                        .font(.system(size: 36, weight: .black, design: .monospaced))
+                        .scaledFont(size: 36, weight: .black, design: .monospaced, relativeTo: .largeTitle)
                         .foregroundColor(color)
                         .shadow(color: color.opacity(0.6), radius: 8)
 
                     Text("\(Int(round(progress * 100)))%")
-                        .font(.system(size: 11, design: .monospaced))
+                        .scaledFont(size: 11, design: .monospaced, relativeTo: .caption)
                         .foregroundColor(AppColors.textSecondary)
                 }
             } else {
                 Text("?")
-                    .font(.system(size: 44, weight: .black, design: .monospaced))
+                    .scaledFont(size: 44, weight: .black, design: .monospaced, relativeTo: .largeTitle)
                     .foregroundColor(color.opacity(0.35))
             }
+        }
+    }
+}
+
+// MARK: - Scanning Arc
+
+/// Uses TimelineView so the rotation runs reliably even when the view
+/// starts on a background tab (onAppear-based animations can be skipped
+/// by SwiftUI when the view isn't visible at the time of appearance).
+private struct ScanningArc: View {
+    let lineWidth: CGFloat
+    let glowRadius: CGFloat
+
+    var body: some View {
+        TimelineView(.animation) { timeline in
+            let seconds = timeline.date.timeIntervalSinceReferenceDate
+            let angle = seconds.remainder(dividingBy: 1.2) / 1.2 * 360
+
+            Circle()
+                .trim(from: 0, to: 0.25)
+                .stroke(
+                    AppColors.teal.opacity(0.6),
+                    style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
+                )
+                .rotationEffect(.degrees(angle))
+                .shadow(color: AppColors.teal.opacity(0.4), radius: glowRadius)
         }
     }
 }

@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var vm: AuditViewModel
+    var vm: AuditViewModel
+    @Environment(\.scenePhase) private var scenePhase
     @State private var selectedTab = 0
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @State private var showWelcome = false
@@ -25,18 +26,28 @@ struct ContentView: View {
                     }
                     .tag(1)
                     .badge(vm.pendingCount > 0 ? vm.pendingCount : 0)
+
+                LeaderboardView(vm: vm)
+                    .tabItem {
+                        Label(NSLocalizedString("tab.leaderboard", comment: ""),
+                              systemImage: "trophy.fill")
+                    }
+                    .tag(2)
+
+                SettingsView(vm: vm)
+                    .tabItem {
+                        Label(NSLocalizedString("tab.settings", comment: ""),
+                              systemImage: "gearshape")
+                    }
+                    .tag(3)
             }
             .tint(AppColors.teal)
-
-            // Confetti overlay
-            if vm.showCompletionCelebration {
-                ConfettiView()
-                    .ignoresSafeArea()
-                    .allowsHitTesting(false)
-            }
         }
         .task {
-            await vm.runScan()
+            // Only auto-scan if the user already dismissed the welcome screen
+            if hasSeenWelcome {
+                await vm.runScan()
+            }
         }
         .onAppear {
             if !hasSeenWelcome {
@@ -45,21 +56,18 @@ struct ContentView: View {
         }
         .onChange(of: vm.completionTrigger) { _, trigger in
             guard trigger != nil else { return }
-            withAnimation(.easeInOut(duration: 0.4)) {
-                selectedTab = 0
-            }
-            // Auto-dismiss confetti after 3.5 seconds
-            if vm.showCompletionCelebration {
-                Task { @MainActor in
-                    try? await Task.sleep(nanoseconds: 3_500_000_000)
-                    withAnimation { vm.showCompletionCelebration = false }
-                }
+            selectedTab = 0
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .background || phase == .active {
+                vm.refreshAppBadge()
             }
         }
         .sheet(isPresented: $showWelcome) {
             WelcomeDisclaimerView {
                 hasSeenWelcome = true
                 showWelcome = false
+                Task { await vm.runScan() }
             }
             .interactiveDismissDisabled(true)
         }

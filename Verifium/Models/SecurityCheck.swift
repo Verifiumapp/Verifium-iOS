@@ -158,13 +158,33 @@ struct SecurityCheck: Identifiable {
 
     var sources: [CheckSource] { CheckSourceRegistry.sources(for: id) }
 
+    /// Parsed OS version components when `detectedValue` contains "current|latest".
+    var osVersionComponents: (current: String, latest: String)? {
+        guard id == "os_version",
+              let value = detectedValue,
+              value.contains("|") else { return nil }
+        let parts = value.split(separator: "|")
+        guard parts.count == 2 else { return nil }
+        return (String(parts[0]), String(parts[1]))
+    }
+
     // MARK: Scoring
+
+    /// Points multiplier — converts weight to a player-visible reward.
+    static let pointsMultiplier = 10
+
     var scoreValue: Int {
         if status.isPassing { return severity.weight }
         if status == .warning { return max(1, severity.weight / 2) }
         return 0
     }
     var maxScore: Int { severity.weight }
+
+    /// Points this check awards when passing (weight × 10).
+    var points: Int { severity.weight * Self.pointsMultiplier }
+
+    /// Points currently earned for this check.
+    var earnedPoints: Int { scoreValue * Self.pointsMultiplier }
 }
 
 // MARK: - Source Registry
@@ -219,6 +239,10 @@ enum CheckSourceRegistry {
                                                    url: URL(string: "https://www.eff.org/deeplinks/2022/05/how-disable-ad-id-tracking-ios-and-android-and-why-you-should-do-it-now"))
     private static let effAdp       = CheckSource(id: "eff_adp", name: "EFF / How to Enable Advanced Data Protection",
                                                    url: URL(string: "https://www.eff.org/deeplinks/2023/05/how-enable-advanced-data-protection-ios-and-why-you-should"))
+    private static let aivdPhish     = CheckSource(id: "aivd_phish_warning", name: "AIVD / Phishing via messaging apps Signal and WhatsApp",
+                                                   url: URL(string: "https://english.aivd.nl/documents/2026/03/09/cybersecurity-advisory.-phishing-via-messaging-apps-signal-and-whatsapp"))
+    private static let waStrict      = CheckSource(id: "wa_strict", name: "WhatsApp / Strict Account Settings",
+                                                   url: URL(string: "https://blog.whatsapp.com/whatsapps-latest-privacy-protection-strict-account-settings"))
     
     // MARK: Lookup
 
@@ -237,13 +261,13 @@ enum CheckSourceRegistry {
         "bluetooth":                [anssi10, cisa],
         "wifi":                     [anssi10, cisa],
         "vpn":                      [anssiCTI, cisa],
-        "whatsapp":                 [waFaq, waSecurity, anssiCTI, amnestyMVT],
+        "whatsapp":                 [waStrict, waFaq, waSecurity, anssiCTI, amnestyMVT, aivdPhish],
         "telegram":                 [occrp, kremlingram],
         "wechat":                   [citizenLabWeChat],
         "icloud_backup":            [appleCloudSec],
         "advanced_data_protection": [effAdp, adp],
         "app_permissions":          [anssi10, amnesty],
-        "signal":                   [signalSafety],
+        "signal":                   [signalSafety, aivdPhish],
         "memory_integrity":         [appleMIE, applePlatSec],
     ]
 

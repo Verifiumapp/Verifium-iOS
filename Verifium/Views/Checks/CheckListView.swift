@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CheckListView: View {
-    @ObservedObject var vm: AuditViewModel
+    var vm: AuditViewModel
     @State private var searchText = ""
     @State private var selectedFilter: FilterOption = .all
     @State private var navigationPath = NavigationPath()
@@ -24,7 +24,7 @@ struct CheckListView: View {
                 let matchesFilter: Bool = {
                     switch selectedFilter {
                     case .all:     return true
-                    case .failing: return check.status.isFailing
+                    case .failing: return check.status.isFailing || check.status == .warning
                     case .pending: return check.status == .manualRequired
                     case .passing: return check.status.isPassing
                     }
@@ -78,7 +78,7 @@ struct CheckListView: View {
                                 if let category = vm.scrollToCategory {
                                     // Delay to let the layout settle on first appearance
                                     Task { @MainActor in
-                                        try? await Task.sleep(nanoseconds: 150_000_000)
+                                        try? await Task.sleep(for: .milliseconds(150))
                                         withAnimation(.easeOut(duration: 0.4)) {
                                             scrollProxy.scrollTo(category, anchor: .top)
                                         }
@@ -88,10 +88,15 @@ struct CheckListView: View {
                             }
                             .onChange(of: vm.scrollToCategory) { _, category in
                                 guard let category else { return }
-                                withAnimation(.easeOut(duration: 0.4)) {
-                                    scrollProxy.scrollTo(category, anchor: .top)
+                                // Delay scroll so a concurrent filter change
+                                // can re-render the list first.
+                                Task { @MainActor in
+                                    try? await Task.sleep(for: .milliseconds(150))
+                                    withAnimation(.easeOut(duration: 0.4)) {
+                                        scrollProxy.scrollTo(category, anchor: .top)
+                                    }
+                                    vm.scrollToCategory = nil
                                 }
-                                vm.scrollToCategory = nil
                             }
                         }
                     }
@@ -101,27 +106,51 @@ struct CheckListView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(AppColors.background, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
-            .searchable(text: $searchText,
-                        prompt: NSLocalizedString("checks.search", comment: ""))
             .navigationDestination(for: String.self) { checkId in
                 if let check = vm.check(id: checkId) {
                     CheckDetailView(check: check, vm: vm) {
                         navigateToNextManualCheck(after: checkId)
                     }
+                } else {
+                    VStack(spacing: 16) {
+                        ProgressView()
+                        Text(NSLocalizedString("dashboard.scanning", comment: ""))
+                            .foregroundColor(AppColors.textSecondary)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(AppColors.background.ignoresSafeArea())
                 }
             }
         }
         .onChange(of: vm.completionTrigger) { _, trigger in
             guard trigger != nil else { return }
-            // Clear the navigation stack when switching to dashboard
+            // Delay path clearing so the tab switch to dashboard completes first.
+            // The checks tab is already hidden by then, so the pop is invisible.
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(200))
+                navigationPath = NavigationPath()
+            }
+        }
+        .onChange(of: vm.checkListPopToRoot) { _, trigger in
+            guard trigger != nil else { return }
             navigationPath = NavigationPath()
+        }
+        .onChange(of: vm.preselectedFilter) { _, filter in
+            guard let filter else { return }
+            if let match = FilterOption.allCases.first(where: { $0.rawValue == filter }) {
+                selectedFilter = match
+            }
+            vm.preselectedFilter = nil
         }
         .onChange(of: vm.navigateToCheckId) { _, checkId in
             guard let checkId else { return }
-            // Clear stack first, then push the target check
+            // Clear stack first, then push the target check after layout settles
             navigationPath = NavigationPath()
-            navigationPath.append(checkId)
-            vm.navigateToCheckId = nil
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(350))
+                navigationPath.append(checkId)
+                vm.navigateToCheckId = nil
+            }
         }
     }
 
@@ -130,8 +159,9 @@ struct CheckListView: View {
     private func navigateToNextManualCheck(after checkId: String) {
         guard vm.pendingCount > 0,
               let nextId = vm.nextManualCheckId(after: checkId) else {
-            // No more pending — just pop back
-            if !navigationPath.isEmpty {
+            // All done — let completionTrigger handle the dashboard transition.
+            // Only pop if there are still pending checks (edge case).
+            if vm.pendingCount > 0, !navigationPath.isEmpty {
                 navigationPath.removeLast()
             }
             return
@@ -142,20 +172,55 @@ struct CheckListView: View {
             navigationPath.removeLast()
         }
         Task { @MainActor in
-            try? await Task.sleep(nanoseconds: 350_000_000)
+            try? await Task.sleep(for: .milliseconds(350))
             navigationPath.append(nextId)
             isTransitioning = false
         }
     }
 
     private var filterBar: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
+        VStack(spacing: 10) {
+            // Search field
             HStack(spacing: 8) {
-                ForEach(FilterOption.allCases, id: \.self) { option in
-                    FilterPill(label: option.localizedLabel,
-                               isSelected: selectedFilter == option) {
-                        withAnimation(.spring(response: 0.3)) {
-                            selectedFilter = option
+                Image(systemName: "magnifyingglass")
+                    .foregroundColor(AppColors.textSecondary)
+                    .scaledFont(size: 13, relativeTo: .footnote)
+                TextField(NSLocalizedString("checks.search", comment: ""),
+                          text: $searchText)
+                    .scaledFont(size: 14, relativeTo: .subheadline)
+                    .foregroundColor(AppColors.textPrimary)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                if !searchText.isEmpty {
+                    Button {
+                        searchText = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(AppColors.textSecondary)
+                            .scaledFont(size: 13, relativeTo: .footnote)
+                    }
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 9)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(AppColors.cardBg)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(AppColors.cardBorder, lineWidth: 1)
+                    )
+            )
+
+            // Filter pills
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(FilterOption.allCases, id: \.self) { option in
+                        FilterPill(label: option.localizedLabel,
+                                   isSelected: selectedFilter == option) {
+                            withAnimation(.spring(response: 0.3)) {
+                                selectedFilter = option
+                            }
                         }
                     }
                 }
@@ -166,7 +231,7 @@ struct CheckListView: View {
     private var emptyState: some View {
         VStack(spacing: 16) {
             Image(systemName: "magnifyingglass.circle")
-                .font(.system(size: 48))
+                .scaledFont(size: 48, relativeTo: .largeTitle)
                 .foregroundColor(AppColors.textSecondary)
             Text(NSLocalizedString("checks.no_results", comment: ""))
                 .foregroundColor(AppColors.textSecondary)
@@ -185,7 +250,7 @@ struct FilterPill: View {
     var body: some View {
         Button(action: action) {
             Text(label)
-                .font(.system(size: 13, weight: .medium))
+                .scaledFont(size: 13, weight: .medium, relativeTo: .footnote)
                 .foregroundColor(isSelected ? AppColors.background : AppColors.textPrimary)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 7)
@@ -207,23 +272,23 @@ struct CategoryHeader: View {
     let category: CheckCategory
     let checks: [SecurityCheck]
 
-    private var passing: Int { checks.filter { $0.status.isPassing }.count }
+    private var passing: Int { checks.count(where: { $0.status.isPassing }) }
 
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: category.icon)
-                .font(.system(size: 13, weight: .semibold))
+                .scaledFont(size: 13, weight: .semibold, relativeTo: .footnote)
                 .foregroundColor(category.accentColor)
 
             Text(category.localizedTitle.uppercased())
-                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                .scaledFont(size: 11, weight: .semibold, design: .monospaced, relativeTo: .caption)
                 .foregroundColor(AppColors.textSecondary)
                 .tracking(2)
 
             Spacer()
 
             Text("\(passing)/\(checks.count)")
-                .font(.system(size: 11, design: .monospaced))
+                .scaledFont(size: 11, design: .monospaced, relativeTo: .caption)
                 .foregroundColor(AppColors.textSecondary)
         }
         .padding(.horizontal, 20)

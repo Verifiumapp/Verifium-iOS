@@ -30,9 +30,10 @@ final class LockdownModeDetector: NSObject, WKNavigationDelegate {
 
     // MARK: - Private
 
-    private static var cachedResult: Bool?
+    @MainActor private static var cachedResult: Bool?
     private var continuation: CheckedContinuation<Bool, Never>?
     private var webView: WKWebView?
+    private var timeoutTask: Task<Void, Never>?
 
     /// Inline HTML that checks for WebAssembly support and posts the result
     /// back via a message handler.
@@ -67,8 +68,8 @@ final class LockdownModeDetector: NSObject, WKNavigationDelegate {
             wv.loadHTMLString(Self.probeHTML, baseURL: nil)
 
             // Safety timeout — if the page never responds, assume we can't determine.
-            Task { [weak self] in
-                try? await Task.sleep(nanoseconds: 3_000_000_000)
+            timeoutTask = Task { [weak self] in
+                try? await Task.sleep(for: .seconds(3))
                 self?.finish(lockdownEnabled: false)
             }
         }
@@ -77,6 +78,8 @@ final class LockdownModeDetector: NSObject, WKNavigationDelegate {
     private func finish(lockdownEnabled: Bool) {
         guard let cont = continuation else { return }
         continuation = nil
+        timeoutTask?.cancel()
+        timeoutTask = nil
         // Clean up message handler before tearing down to reduce WebKit process errors
         webView?.configuration.userContentController.removeScriptMessageHandler(forName: "lockdownProbe")
         webView?.stopLoading()
@@ -113,6 +116,9 @@ private final class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
 
     func userContentController(_ controller: WKUserContentController,
                                didReceive message: WKScriptMessage) {
-        callback(message.body)
+        // WebKit always delivers this on the main thread
+        MainActor.assumeIsolated {
+            callback(message.body)
+        }
     }
 }

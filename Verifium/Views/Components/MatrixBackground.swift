@@ -1,5 +1,4 @@
 import SwiftUI
-import Combine
 
 /// A subtle, randomly scrolling hex character background for the cyber aesthetic.
 struct MatrixBackground: View {
@@ -9,8 +8,6 @@ struct MatrixBackground: View {
     @State private var offsets: [[CGFloat]] = []
     @State private var chars: [[String]] = []
     @State private var opacities: [[Double]] = []
-
-    private let timer = Timer.publish(every: 0.4, on: .main, in: .common).autoconnect()
 
     var body: some View {
         GeometryReader { geo in
@@ -34,14 +31,17 @@ struct MatrixBackground: View {
                 }
             }
             .onAppear { setup(colW: colW, rowH: rowH) }
-            .onReceive(timer) { _ in
-                guard !chars.isEmpty else { return }
+            .task {
                 let hexChars = Array("0123456789ABCDEF")
-                let ci = Int.random(in: 0..<columns)
-                let ri = Int.random(in: 0..<rows)
-                if ci < chars.count && ri < chars[ci].count {
-                    chars[ci][ri] = String(hexChars.randomElement()!)
-                    opacities[ci][ri] = Double.random(in: 0.05...0.4)
+                while !Task.isCancelled {
+                    try? await Task.sleep(for: .milliseconds(400))
+                    guard !chars.isEmpty else { continue }
+                    let ci = Int.random(in: 0..<columns)
+                    let ri = Int.random(in: 0..<rows)
+                    if ci < chars.count && ri < chars[ci].count {
+                        chars[ci][ri] = String(hexChars.randomElement()!)
+                        opacities[ci][ri] = Double.random(in: 0.05...0.4)
+                    }
                 }
             }
         }

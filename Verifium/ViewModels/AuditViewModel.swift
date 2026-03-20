@@ -1,24 +1,31 @@
 import Foundation
 import SwiftUI
-import Combine
+import UserNotifications
 
 // MARK: - AuditViewModel
 
 @MainActor
-final class AuditViewModel: ObservableObject {
+@Observable
+final class AuditViewModel {
 
-    // MARK: Published State
-    @Published var checks: [SecurityCheck] = SecurityChecker.allChecks()
-    @Published var isScanning: Bool = false
-    @Published var lastScanDate: Date? = nil
-    @Published var scanProgress: Double = 0
-    @Published var completionTrigger: UUID? = nil
-    @Published var showCompletionCelebration = false
-    @Published var scrollToCategory: CheckCategory? = nil
-    @Published var navigateToCheckId: String? = nil
+    // MARK: State
+    var checks: [SecurityCheck] = SecurityChecker.allChecks()
+    var isScanning: Bool = false
+    var lastScanDate: Date? = nil
+    var scanProgress: Double = 0
+    var completionTrigger: UUID? = nil
+    var showCompletionCelebration = false
+    var scrollToCategory: CheckCategory? = nil
+    var navigateToCheckId: String? = nil
+    var checkListPopToRoot: UUID? = nil
+    var preselectedFilter: String? = nil
 
+    @ObservationIgnored
     private let checker = SecurityChecker()
+    @ObservationIgnored
     private static let manualResultsKey = "manualCheckResults"
+    @ObservationIgnored
+    private var badgeAllowed = false
 
     // MARK: Init
 
@@ -38,21 +45,26 @@ final class AuditViewModel: ObservableObject {
     /// Score normalized to 0–100 for display.
     var displayScore: Int { Int(round(scorePercent * 100)) }
 
+    /// Total points earned (weight × 10 for each passing check).
+    var earnedPoints: Int { checks.reduce(0) { $0 + $1.earnedPoints } }
+    /// Maximum attainable points.
+    var maxPoints: Int { checks.reduce(0) { $0 + $1.points } }
+
     var scoreGrade: String {
         switch scorePercent {
         case 0.9...:  return "A"
-        case 0.75...: return "B"
-        case 0.6...:  return "C"
-        case 0.4...:  return "D"
+        case 0.7...:  return "B"
+        case 0.5...:  return "C"
+        case 0.3...:  return "D"
         default:      return "F"
         }
     }
 
     var scoreColor: Color {
         switch scorePercent {
-        case 0.85...: return AppColors.teal
-        case 0.65...: return AppColors.green
-        case 0.45...: return AppColors.orange
+        case 0.9...:  return AppColors.teal
+        case 0.7...:  return AppColors.green
+        case 0.5...:  return AppColors.orange
         default:      return AppColors.red
         }
     }
@@ -61,22 +73,32 @@ final class AuditViewModel: ObservableObject {
 
     var isScoreKnown: Bool { pendingCount == 0 }
 
-    var passingCount:  Int { checks.filter { $0.status.isPassing }.count }
-    var failingCount:  Int { checks.filter { $0.status.isFailing || $0.status == .warning }.count }
-    var pendingCount:  Int { checks.filter { $0.status == .manualRequired }.count }
+    var passingCount:  Int { checks.count(where: { $0.status.isPassing }) }
+    var failingCount:  Int { checks.count(where: { $0.status.isFailing || $0.status == .warning }) }
+    var pendingCount:  Int { checks.count(where: { $0.status == .manualRequired }) }
     var criticalIssues:[SecurityCheck] {
         checks.filter { $0.status.isFailing && $0.severity == .critical }
     }
 
     // MARK: Computed — Grouping
 
+    private var _cachedChecksByCategory: [(category: CheckCategory, checks: [SecurityCheck])]?
+    private var _cachedChecksSnapshot: [CheckStatus] = []
+
     var checksByCategory: [(category: CheckCategory, checks: [SecurityCheck])] {
-        CheckCategory.allCases.compactMap { category in
+        let snapshot = checks.map(\.status)
+        if let cached = _cachedChecksByCategory, snapshot == _cachedChecksSnapshot {
+            return cached
+        }
+        let result = CheckCategory.allCases.compactMap { category in
             let filtered = checks
                 .filter { $0.category == category }
                 .sorted { $0.severity > $1.severity }
             return filtered.isEmpty ? nil : (category: category, checks: filtered)
         }
+        _cachedChecksSnapshot = snapshot
+        _cachedChecksByCategory = result
+        return result
     }
 
     // MARK: Actions
@@ -86,36 +108,50 @@ final class AuditViewModel: ObservableObject {
         isScanning = true
         scanProgress = 0
 
-        // Reset auto-checkable to "checking"
-        for i in checks.indices where checks[i].isAutoCheckable {
+        // Reset auto-checkable to "checking", but preserve manually reviewed results
+        for i in checks.indices where checks[i].isAutoCheckable && !checks[i].status.isManuallyReviewed {
             checks[i].status = .checking
             checks[i].detectedValue = nil
         }
 
         let autoIndices = checks.indices.filter { checks[$0].isAutoCheckable }
         for (step, idx) in autoIndices.enumerated() {
-            try? await Task.sleep(nanoseconds: 200_000_000)
+            try? await Task.sleep(for: .milliseconds(200))
+            guard !Task.isCancelled else { break }
             let (status, value) = await checker.runCheck(id: checks[idx].id)
-            checks[idx].status = status
-            checks[idx].detectedValue = value
+            // If the scan returns .manualRequired but the user already reviewed
+            // this check, keep their answer.
+            if status == .manualRequired && checks[idx].status.isManuallyReviewed {
+                checks[idx].detectedValue = value
+            } else {
+                checks[idx].status = status
+                checks[idx].detectedValue = value
+            }
             scanProgress = Double(step + 1) / Double(autoIndices.count)
         }
 
-        lastScanDate = Date()
+        lastScanDate = .now
         isScanning = false
         scanProgress = 1
+        updateAppBadge()
     }
 
     func markCheck(id: String, passed: Bool) {
         guard let i = checks.firstIndex(where: { $0.id == id }) else { return }
         checks[i].status = passed ? .manualPassed : .manualFailed
         saveManualResults()
+        updateAppBadge()
 
-        // All manual reviews done?
+        // All manual reviews done? Delay for the "+X pts" animation if passed,
+        // otherwise transition quickly.
         if pendingCount == 0 {
-            completionTrigger = UUID()
-            if scorePercent >= 0.65 {
-                showCompletionCelebration = true
+            let delay: Duration = passed ? .milliseconds(1500) : .milliseconds(600)
+            Task { @MainActor in
+                try? await Task.sleep(for: delay)
+                completionTrigger = UUID()
+                if scorePercent >= 0.7 {
+                    showCompletionCelebration = true
+                }
             }
         }
     }
@@ -124,6 +160,7 @@ final class AuditViewModel: ObservableObject {
         guard let i = checks.firstIndex(where: { $0.id == id }) else { return }
         checks[i].status = .manualRequired
         saveManualResults()
+        updateAppBadge()
     }
 
     func resetAllManualChecks() {
@@ -133,6 +170,28 @@ final class AuditViewModel: ObservableObject {
         completionTrigger = nil
         showCompletionCelebration = false
         saveManualResults()
+        updateAppBadge()
+    }
+
+    // MARK: Badge
+
+    /// Request badge permission, then immediately set the badge.
+    /// Called once from the App's .task — blocks until the user responds.
+    func requestBadgePermission() async {
+        let granted = (try? await UNUserNotificationCenter.current()
+            .requestAuthorization(options: .badge)) ?? false
+        badgeAllowed = granted
+        if granted { updateAppBadge() }
+    }
+
+    /// Public entry point for refreshing the badge (e.g. on scene phase changes).
+    func refreshAppBadge() { updateAppBadge() }
+
+    private func updateAppBadge() {
+        guard badgeAllowed else { return }
+        Task {
+            try? await UNUserNotificationCenter.current().setBadgeCount(pendingCount)
+        }
     }
 
     // MARK: Persistence

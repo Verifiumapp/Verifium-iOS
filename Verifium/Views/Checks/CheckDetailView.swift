@@ -3,13 +3,14 @@ import AudioToolbox
 
 struct CheckDetailView: View {
     let check: SecurityCheck
-    @ObservedObject var vm: AuditViewModel
+    var vm: AuditViewModel
     var onMarkCompleted: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
     @State private var showConfirmPass = false
     @State private var showConfirmFail = false
     @State private var isNavigating = false
+    @State private var floatingPoints: Int? = nil
 
     private var liveCheck: SecurityCheck {
         vm.check(id: check.id) ?? check
@@ -77,6 +78,13 @@ struct CheckDetailView: View {
                 .padding(20)
             }
         }
+        .overlay {
+            if let pts = floatingPoints {
+                FloatingPointsView(points: pts) {
+                    floatingPoints = nil
+                }
+            }
+        }
         .navigationTitle(liveCheck.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(AppColors.background, for: .navigationBar)
@@ -92,14 +100,14 @@ struct CheckDetailView: View {
                     .fill(liveCheck.status.color.opacity(0.15))
                     .frame(width: 64, height: 64)
                 Image(systemName: liveCheck.status.icon)
-                    .font(.system(size: 28))
+                    .scaledFont(size: 28, relativeTo: .title)
                     .foregroundColor(liveCheck.status.color)
                     .shadow(color: liveCheck.status.color.opacity(0.5), radius: 8)
             }
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(liveCheck.status.localizedLabel.uppercased())
-                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .scaledFont(size: 10, weight: .bold, design: .monospaced, relativeTo: .caption)
                     .foregroundColor(liveCheck.status.color)
                     .tracking(2)
 
@@ -127,6 +135,13 @@ struct CheckDetailView: View {
                 )
         )
         .shadow(color: liveCheck.status.color.opacity(0.15), radius: 12)
+        .overlay(alignment: .topTrailing) {
+            PointsBadge(
+                points: liveCheck.earnedPoints > 0 ? liveCheck.earnedPoints : liveCheck.points,
+                isEarned: liveCheck.status.isPassing
+            )
+                .offset(x: 6, y: -10)
+        }
     }
 
     private var guidanceSteps: some View {
@@ -134,7 +149,7 @@ struct CheckDetailView: View {
             ForEach(Array(liveCheck.guidanceSteps.enumerated()), id: \.offset) { idx, step in
                 HStack(alignment: .top, spacing: 12) {
                     Text("\(idx + 1)")
-                        .font(.system(size: 12, weight: .bold, design: .monospaced))
+                        .scaledFont(size: 12, weight: .bold, design: .monospaced, relativeTo: .footnote)
                         .foregroundColor(AppColors.background)
                         .frame(width: 22, height: 22)
                         .background(Circle().fill(AppColors.orange))
@@ -155,10 +170,10 @@ struct CheckDetailView: View {
                     Link(destination: url) {
                         HStack(spacing: 6) {
                             Image(systemName: "arrow.up.right.square")
-                                .font(.system(size: 10))
+                                .scaledFont(size: 10, relativeTo: .caption)
                                 .foregroundColor(AppColors.purple)
                             Text(source.name)
-                                .font(.system(size: 11))
+                                .scaledFont(size: 11, relativeTo: .caption)
                                 .foregroundColor(AppColors.purple)
                                 .underline()
                                 .lineLimit(2)
@@ -167,7 +182,7 @@ struct CheckDetailView: View {
                     }
                 } else {
                     Text(source.name)
-                        .font(.system(size: 11))
+                        .scaledFont(size: 11, relativeTo: .caption)
                         .foregroundColor(AppColors.textSecondary)
                 }
             }
@@ -177,7 +192,7 @@ struct CheckDetailView: View {
     private var manualActionButtons: some View {
         VStack(spacing: 16) {
             Text(NSLocalizedString("detail.manual_prompt", comment: ""))
-                .font(.system(size: 11, design: .monospaced))
+                .scaledFont(size: 11, design: .monospaced, relativeTo: .caption)
                 .foregroundColor(AppColors.textSecondary)
                 .tracking(1)
                 .frame(maxWidth: .infinity, alignment: .center)
@@ -187,7 +202,8 @@ struct CheckDetailView: View {
                     label: NSLocalizedString("detail.mark_fail", comment: ""),
                     icon: "xmark.shield.fill",
                     activeColor: AppColors.red,
-                    isSelected: liveCheck.status == .manualFailed
+                    isSelected: liveCheck.status == .manualFailed,
+                    isDisabled: liveCheck.status == .manualFailed
                 ) {
                     triggerFeedback(passed: false)
                     withAnimation(.spring(response: 0.35, dampingFraction: 0.6)) {
@@ -200,8 +216,10 @@ struct CheckDetailView: View {
                     label: NSLocalizedString("detail.mark_pass", comment: ""),
                     icon: "checkmark.shield.fill",
                     activeColor: AppColors.teal,
-                    isSelected: liveCheck.status == .manualPassed
+                    isSelected: liveCheck.status == .manualPassed,
+                    isDisabled: liveCheck.status == .manualPassed
                 ) {
+                    floatingPoints = liveCheck.points
                     triggerFeedback(passed: true)
                     withAnimation(.spring(response: 0.35, dampingFraction: 0.6)) {
                         vm.markCheck(id: liveCheck.id, passed: true)
@@ -219,9 +237,9 @@ struct CheckDetailView: View {
                 } label: {
                     HStack(spacing: 4) {
                         Image(systemName: "arrow.counterclockwise")
-                            .font(.system(size: 11))
+                            .scaledFont(size: 11, relativeTo: .caption)
                         Text(NSLocalizedString("detail.reset", comment: ""))
-                            .font(.system(size: 12))
+                            .scaledFont(size: 12, relativeTo: .footnote)
                     }
                     .foregroundColor(AppColors.textSecondary)
                 }
@@ -240,12 +258,12 @@ struct CheckDetailView: View {
         )
     }
 
-    /// After marking pass/fail, wait briefly for the animation, then auto-navigate.
+    /// After marking pass/fail, wait briefly for the points animation, then auto-navigate.
     private func scheduleAutoNavigation() {
         guard let onMarkCompleted = onMarkCompleted, !isNavigating else { return }
         isNavigating = true
         Task { @MainActor in
-            try? await Task.sleep(nanoseconds: 800_000_000)
+            try? await Task.sleep(for: .milliseconds(1200))
             onMarkCompleted()
         }
     }
@@ -264,17 +282,13 @@ struct CheckDetailView: View {
         VStack(spacing: 6) {
             Button {
                 if let url = URL(string: "App-Prefs:") {
-                    UIApplication.shared.open(url, options: [:]) { success in
-                        if !success, let fallback = URL(string: UIApplication.openSettingsURLString) {
-                            UIApplication.shared.open(fallback, options: [:], completionHandler: nil)
-                        }
-                    }
+                    UIApplication.shared.open(url)
                 }
             } label: {
                 HStack {
                     Image(systemName: "gear")
                     Text(NSLocalizedString("detail.open_settings", comment: ""))
-                        .font(.system(size: 14, weight: .semibold))
+                        .scaledFont(size: 14, weight: .semibold, relativeTo: .subheadline)
                     Spacer()
                     Image(systemName: "arrow.up.right")
                 }
@@ -292,7 +306,7 @@ struct CheckDetailView: View {
             }
 
             Text(NSLocalizedString("detail.settings_disclaimer", comment: ""))
-                .font(.system(size: 11))
+                .scaledFont(size: 11, relativeTo: .caption)
                 .foregroundColor(AppColors.textSecondary.opacity(0.7))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 8)
@@ -303,19 +317,16 @@ struct CheckDetailView: View {
 
     @ViewBuilder
     private func detectedValueContent(value: String, check: SecurityCheck) -> some View {
-        if check.id == "os_version", value.contains("|") {
-            let parts = value.split(separator: "|")
-            let current = String(parts[0])
-            let latest = String(parts[1])
+        if let versions = check.osVersionComponents {
             HStack(spacing: 8) {
-                Text("iOS \(current)")
-                    .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                Text("iOS \(versions.current)")
+                    .scaledFont(size: 14, weight: .semibold, design: .monospaced, relativeTo: .subheadline)
                     .foregroundColor(AppColors.red)
                 Image(systemName: "arrow.right")
-                    .font(.system(size: 12))
+                    .scaledFont(size: 12, relativeTo: .footnote)
                     .foregroundColor(AppColors.textSecondary)
-                Text("iOS \(latest)")
-                    .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                Text("iOS \(versions.latest)")
+                    .scaledFont(size: 14, weight: .semibold, design: .monospaced, relativeTo: .subheadline)
                     .foregroundColor(AppColors.green)
             }
             .padding(10)
@@ -326,7 +337,7 @@ struct CheckDetailView: View {
             )
         } else {
             Text(value)
-                .font(.system(size: 14, design: .monospaced))
+                .scaledFont(size: 14, design: .monospaced, relativeTo: .subheadline)
                 .foregroundColor(AppColors.textMono)
                 .padding(10)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -341,7 +352,7 @@ struct CheckDetailView: View {
     private func section<Content: View>(title: String, icon: String, color: Color, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Label(title, systemImage: icon)
-                .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                .scaledFont(size: 12, weight: .semibold, design: .monospaced, relativeTo: .footnote)
                 .foregroundColor(color)
                 .tracking(1)
 
@@ -367,6 +378,7 @@ struct VerificationButton: View {
     let icon: String
     let activeColor: Color
     let isSelected: Bool
+    var isDisabled: Bool = false
     let action: () -> Void
 
     @State private var isPressed = false
@@ -389,14 +401,14 @@ struct VerificationButton: View {
                         .frame(width: 52, height: 52)
 
                     Image(systemName: icon)
-                        .font(.system(size: 22, weight: .semibold))
+                        .scaledFont(size: 22, weight: .semibold, relativeTo: .title2)
                         .foregroundColor(isSelected ? .black : activeColor.opacity(0.6))
                         .scaleEffect(isSelected ? 1.15 : 1.0)
                 }
                 .animation(.spring(response: 0.3, dampingFraction: 0.55), value: isSelected)
 
                 Text(label)
-                    .font(.system(size: 13, weight: isSelected ? .bold : .medium))
+                    .scaledFont(size: 13, weight: isSelected ? .bold : .medium, relativeTo: .footnote)
                     .foregroundColor(isSelected ? activeColor : AppColors.textSecondary)
                     .animation(.easeOut(duration: 0.2), value: isSelected)
             }
@@ -416,9 +428,11 @@ struct VerificationButton: View {
             .scaleEffect(isPressed ? 0.95 : 1.0)
         }
         .buttonStyle(.plain)
+        .disabled(isDisabled)
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
                 .onChanged { _ in
+                    guard !isDisabled else { return }
                     withAnimation(.easeOut(duration: 0.1)) { isPressed = true }
                 }
                 .onEnded { _ in
@@ -432,7 +446,7 @@ struct SeverityBadge: View {
     let severity: CheckSeverity
     var body: some View {
         Text(severity.localizedLabel.uppercased())
-            .font(.system(size: 9, weight: .bold))
+            .scaledFont(size: 9, weight: .bold, relativeTo: .caption2)
             .foregroundColor(severity.color)
             .padding(.horizontal, 7)
             .padding(.vertical, 3)
@@ -446,12 +460,81 @@ struct CategoryBadge: View {
     let category: CheckCategory
     var body: some View {
         Text(category.localizedTitle)
-            .font(.system(size: 9, weight: .medium))
+            .scaledFont(size: 9, weight: .medium, relativeTo: .caption2)
             .foregroundColor(category.accentColor)
             .padding(.horizontal, 7)
             .padding(.vertical, 3)
             .background(
                 Capsule().fill(category.accentColor.opacity(0.12))
             )
+    }
+}
+
+// MARK: - Points Badge
+
+struct PointsBadge: View {
+    let points: Int
+    let isEarned: Bool
+
+    private let pointsColor = AppColors.yellow
+
+    var body: some View {
+        Text("+\(points) pts")
+            .scaledFont(size: 10, weight: .heavy, design: .monospaced, relativeTo: .caption)
+            .foregroundColor(isEarned ? .black : pointsColor.opacity(0.7))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(
+                Capsule()
+                    .fill(isEarned ? pointsColor : AppColors.cardBg)
+                    .overlay(
+                        Capsule()
+                            .stroke(pointsColor.opacity(isEarned ? 0.8 : 0.3), lineWidth: 1)
+                    )
+            )
+            .shadow(color: isEarned ? pointsColor.opacity(0.5) : .clear, radius: 6)
+    }
+}
+
+// MARK: - Floating Points Animation
+
+/// A "+X pts" label that floats up and fades out, game-style.
+struct FloatingPointsView: View {
+    let points: Int
+    let onComplete: () -> Void
+
+    @State private var offset: CGFloat = 0
+    @State private var opacity: Double = 1
+    @State private var scale: CGFloat = 0.5
+
+    private let pointsColor = AppColors.yellow
+
+    var body: some View {
+        Text("+\(points) pts")
+            .scaledFont(size: 32, weight: .heavy, design: .monospaced, relativeTo: .largeTitle)
+            .foregroundColor(pointsColor)
+            .shadow(color: pointsColor.opacity(0.8), radius: 10)
+            .shadow(color: pointsColor.opacity(0.4), radius: 20)
+            .scaleEffect(scale)
+            .opacity(opacity)
+            .offset(y: offset)
+            .allowsHitTesting(false)
+            .onAppear {
+                // Pop in
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                    scale = 1.1
+                }
+                // Then float up + fade out
+                withAnimation(.easeOut(duration: 1.0).delay(0.3)) {
+                    offset = -100
+                    opacity = 0
+                    scale = 0.8
+                }
+                // Clean up
+                Task { @MainActor in
+                    try? await Task.sleep(for: .milliseconds(1400))
+                    onComplete()
+                }
+            }
     }
 }

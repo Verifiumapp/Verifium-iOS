@@ -34,13 +34,22 @@ enum VersionService {
 
     private static func fetchFromNetwork() async -> LatestVersion? {
         do {
-            let (data, response) = try await URLSession.shared.data(from: endpoint)
+            let config = URLSessionConfiguration.default
+            config.timeoutIntervalForResource = 10
+            let session = URLSession(configuration: config)
+            let (data, response) = try await session.data(from: endpoint)
             guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
                 return nil
             }
             let json = try JSONDecoder().decode(VersionResponse.self, from: data)
-            return parse(json.latest)
+            // Prefer latest_full (includes patch/security updates) over latest
+            let versionString = json.latestFull ?? json.latest
+            return parse(versionString)
+        } catch is DecodingError {
+            // Malformed response — don't fall back to cache (it may be stale)
+            return nil
         } catch {
+            // Network error — try cache
             return nil
         }
     }
@@ -50,14 +59,14 @@ enum VersionService {
     private static func cache(_ version: LatestVersion) {
         let defaults = UserDefaults.standard
         defaults.set(version.displayString, forKey: cacheKey)
-        defaults.set(Date().timeIntervalSince1970, forKey: cacheDateKey)
+        defaults.set(Date.now.timeIntervalSince1970, forKey: cacheDateKey)
     }
 
     private static func cachedVersion() -> LatestVersion? {
         let defaults = UserDefaults.standard
         guard let cached = defaults.string(forKey: cacheKey) else { return nil }
         let timestamp = defaults.double(forKey: cacheDateKey)
-        guard Date().timeIntervalSince1970 - timestamp < cacheTTL else { return nil }
+        guard Date.now.timeIntervalSince1970 - timestamp < cacheTTL else { return nil }
         return parse(cached)
     }
 
@@ -79,5 +88,11 @@ enum VersionService {
 
     private struct VersionResponse: Decodable {
         let latest: String
+        let latestFull: String?
+
+        enum CodingKeys: String, CodingKey {
+            case latest
+            case latestFull = "latest_full"
+        }
     }
 }
