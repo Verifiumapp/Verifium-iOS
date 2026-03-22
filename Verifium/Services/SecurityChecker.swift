@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import CoreLocation
+import CFNetwork
 import Network
 import Darwin
 
@@ -268,12 +269,32 @@ final class SecurityChecker {
 
     // MARK: VPN
 
-    /// Checks network interfaces for an active VPN tunnel (utun, ppp).
-    /// ipsec0 is excluded — it is a permanent iOS system interface, always
-    /// UP/RUNNING with an IP even when no VPN profile exists.
-    /// We require an IPv4 address because system utun interfaces only carry
-    /// link-local IPv6; a real VPN tunnel always assigns an IPv4.
+    /// Checks for an active VPN tunnel using two complementary methods:
+    ///
+    /// 1. **CFNetworkCopySystemProxySettings** — The `__SCOPED__` dictionary
+    ///    only lists interfaces that actively route traffic. This reliably
+    ///    detects IKE/IPsec built-in VPN without false positives from dormant
+    ///    `ipsecX` interfaces that iOS creates for configured-but-disconnected
+    ///    VPN profiles.
+    ///
+    /// 2. **getifaddrs fallback** — Catches WireGuard / OpenVPN `utun` and
+    ///    `ppp` tunnels that may not appear in the scoped proxy dictionary.
+    ///    Only checks `utun` / `ppp` (not `ipsec`) to avoid false positives.
     private func checkVPN() -> (CheckStatus, String?) {
+        // --- Pass 1: scoped proxy settings (reliable for all VPN types) ---
+        if let cfDict = CFNetworkCopySystemProxySettings()?.takeRetainedValue() as? [String: Any],
+           let scoped = cfDict["__SCOPED__"] as? [String: Any] {
+            let vpnPrefixes = ["utun", "tun", "tap", "ppp", "ipsec"]
+            for key in scoped.keys {
+                if vpnPrefixes.contains(where: { key.hasPrefix($0) }) {
+                    return (.passed, key)
+                }
+            }
+        }
+
+        // --- Pass 2: interface enumeration for utun / ppp only ---
+        // ipsec is intentionally excluded here — dormant ipsecX interfaces
+        // appear UP/RUNNING with IPv4 even when the VPN is disconnected.
         var ifaddr: UnsafeMutablePointer<ifaddrs>?
         guard getifaddrs(&ifaddr) == 0 else { return (.warning, nil) }
         defer { freeifaddrs(ifaddr) }
@@ -285,8 +306,8 @@ final class SecurityChecker {
             let family = current.pointee.ifa_addr?.pointee.sa_family ?? 0
 
             let isUp       = (flags & IFF_UP)       != 0
-            let isRunning  = (flags & IFF_RUNNING)   != 0
-            let isLoopback = (flags & IFF_LOOPBACK)  != 0
+            let isRunning  = (flags & IFF_RUNNING)  != 0
+            let isLoopback = (flags & IFF_LOOPBACK) != 0
             let isTunnel   = name.hasPrefix("utun") || name.hasPrefix("ppp")
             let hasIPv4    = family == UInt8(AF_INET)
 
