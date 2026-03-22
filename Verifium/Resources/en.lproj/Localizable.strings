@@ -227,6 +227,12 @@
 "check.wechat.explanation" = "WeChat does not offer end-to-end encryption for any of its communications. Messages, files, and media are accessible to the platform operator and, by extension, to Chinese authorities. Citizen Lab has documented content surveillance, censorship, and metadata collection in WeChat. Don't use WeChat for anything sensitive. Having it on your device increases your exposure.";
 "check.wechat.guidance" = "Delete WeChat from your device\nFor communication with contacts in China, consider using Signal (if accessible) or be aware that all WeChat content should be considered monitored\nIf WeChat is operationally required, use it exclusively on a dedicated secondary device isolated from sensitive data and accounts";
 
+/* --- Lock Screen Access --- */
+"check.lock_screen_access.title" = "Lock Screen Access";
+"check.lock_screen_access.short" = "Disable Control Center and Siri on the Lock Screen";
+"check.lock_screen_access.explanation" = "By default, iOS allows access to Control Center and Siri from the Lock Screen without requiring your passcode or Face ID. An attacker with physical access to your device can use Control Center to enable Airplane Mode (blocking remote wipe), toggle off Wi-Fi or cellular data, or use Siri to read messages and make calls. Disabling these features on the Lock Screen forces authentication before any action can be taken.";
+"check.lock_screen_access.guidance" = "Open Settings → Face ID & Passcode (or Touch ID & Passcode)\nEnter your passcode\nScroll to the Allow Access When Locked section\nDisable Control Center\nDisable Siri";
+
 /* --- Memory Integrity (MIE / EMTE) --- */
 "check.memory_integrity.title" = "Hardware Memory Protection";
 "check.memory_integrity.short" = "Check if your device has built-in memory attack protection";

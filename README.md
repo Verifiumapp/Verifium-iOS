@@ -8,7 +8,7 @@ An open-source iOS security and privacy auditor. Verifium walks you through hard
 
 ## What it does
 
-Verifium runs 22 security checks across five categories: device hardening, network exposure, installed apps, privacy settings, and data protection. Each check is scored by severity (critical, high, medium, low) and contributes to a weighted security score out of 1450 points.
+Verifium runs 23 security checks across five categories: device hardening, network exposure, installed apps, privacy settings, and data protection. Each check is scored by severity (critical, high, medium, low) and contributes to a weighted security score out of 1480 points.
 
 11 checks run automatically using iOS APIs:
 - OS version, Lockdown Mode, reboot frequency
@@ -17,9 +17,10 @@ Verifium runs 22 security checks across five categories: device hardening, netwo
 - App detection for WhatsApp, Telegram, WeChat, and Signal
 - Hardware memory protection (MIE/EMTE) on iPhone 17 and iPhone Air
 
-11 checks require manual verification with step-by-step guidance:
+12 checks require manual verification with step-by-step guidance:
 - Passcode strength, 2FA, Stolen Device Protection, automatic updates
 - Bluetooth and Wi-Fi disabled when not in use
+- Lock Screen access (Control Center and Siri disabled when locked)
 - iCloud Backup, Advanced Data Protection
 - AirDrop, app permissions, Apple analytics sharing
 

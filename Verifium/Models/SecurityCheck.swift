@@ -233,6 +233,8 @@ enum CheckSourceRegistry {
                                                    url: URL(string: "https://www.apple.com/privacy/control/"))
     private static let appleCloudSec = CheckSource(id: "apple_icloud_sec", name: "Apple / iCloud data security overview",
                                                    url: URL(string: "https://support.apple.com/en-us/102651"))
+    private static let appleLockScreen = CheckSource(id: "apple_lock_screen", name: "Apple / Use a passcode with your iPhone",
+                                                   url: URL(string: "https://support.apple.com/en-us/119586"))
     private static let appleMIE      = CheckSource(id: "apple_mie", name: "Apple / Memory Integrity Enforcement",
                                                    url: URL(string: "https://security.apple.com/blog/memory-integrity-enforcement/"))
     private static let effAdid       = CheckSource(id: "eff_adid", name: "EFF / How to Disable Ad ID Tracking",
@@ -267,6 +269,7 @@ enum CheckSourceRegistry {
         "icloud_backup":            [appleCloudSec],
         "advanced_data_protection": [effAdp, adp],
         "app_permissions":          [anssi10, amnesty],
+        "lock_screen_access":       [appleLockScreen, applePlatSec],
         "signal":                   [signalSafety, aivdPhish],
         "memory_integrity":         [appleMIE, applePlatSec],
     ]

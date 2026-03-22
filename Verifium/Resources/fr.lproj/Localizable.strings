@@ -213,6 +213,12 @@
 "check.wechat.explanation" = "WeChat ne propose aucun chiffrement de bout en bout. Les messages, fichiers et médias sont accessibles à l'opérateur de la plateforme et, par extension, aux autorités chinoises. Le Citizen Lab a documenté la surveillance du contenu, la censure et la collecte de métadonnées dans WeChat. N'utilisez pas WeChat pour quoi que ce soit de sensible. Sa présence sur votre appareil augmente votre exposition.";
 "check.wechat.guidance" = "Supprimez WeChat de votre appareil\nPour communiquer avec des contacts en Chine, envisagez Signal (si accessible) ou soyez conscient que tout contenu WeChat doit être considéré comme surveillé\nSi WeChat est opérationnellement nécessaire, utilisez-le exclusivement sur un appareil secondaire dédié, isolé de vos données et comptes sensibles";
 
+/* --- Accès en mode verrouillé --- */
+"check.lock_screen_access.title" = "Accès écran verrouillé";
+"check.lock_screen_access.short" = "Désactiver le Centre de contrôle et Siri sur l'écran verrouillé";
+"check.lock_screen_access.explanation" = "Par défaut, iOS autorise l'accès au Centre de contrôle et à Siri depuis l'écran verrouillé sans exiger de code ou Face ID. Un attaquant ayant un accès physique à votre appareil peut utiliser le Centre de contrôle pour activer le mode Avion (bloquant l'effacement à distance), couper le Wi-Fi ou les données cellulaires, ou utiliser Siri pour lire vos messages et passer des appels. Désactiver ces fonctionnalités sur l'écran verrouillé force l'authentification avant toute action.";
+"check.lock_screen_access.guidance" = "Ouvrez Réglages → Face ID et code (ou Touch ID et code)\nEntrez votre code d'accès\nDescendez jusqu'à la section Autoriser l'accès en mode verrouillé\nDésactivez Centre de contrôle\nDésactivez Siri";
+
 /* --- Protection mémoire (MIE / EMTE) --- */
 "check.memory_integrity.title" = "Protection mémoire matérielle";
 "check.memory_integrity.short" = "Vérifier si votre appareil dispose d'une protection matérielle de la mémoire";

@@ -182,6 +182,14 @@ final class SecurityChecker {
                           isAutoCheckable: false,
                           showsSettingsLink: true),
 
+            // Face ID & Passcode → Allow Access When Locked
+            SecurityCheck(id: "lock_screen_access",
+                          category: .privacy,
+                          severity: .medium,
+                          status: .manualRequired,
+                          isAutoCheckable: false,
+                          showsSettingsLink: true),
+
             // Signal — auto-detect installation, manual security review if present
             SecurityCheck(id: "signal",
                           category: .applications,
